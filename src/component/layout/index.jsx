@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ProtoTypes from "prop-types";
 import Sidebar from "../sidebar";
 import Overlay from "../overlay";
@@ -7,12 +7,13 @@ import HeaderOne from "../header/HeaderOne";
 import HeaderTwo from "../header/HeaderTwo";
 import { createContext } from "react";
 import { Outlet } from "react-router-dom";
+import MyContext from "../../DataProvider";
 
 export const ThemeContext = createContext(null);
 
 function Layout({ bg, overlay, children }) {
-
-  const [defaultAccount, setDefaultAccount] = useState(null)
+  const { defaultAccount, setDefaultAccount } = useContext(MyContext)
+  // const [defaultAccount, setDefaultAccount] = useState(null)
   const [correctNetwork, setCorrectNetwork] = useState(null);
 
   useEffect(() => {
@@ -96,7 +97,6 @@ function Layout({ bg, overlay, children }) {
             <HeaderOne
               handleSidebar={() => setSidebar(!sidebar)}
               isConnectingWallet={handleWalletConnect}
-              defaultAcount={defaultAccount}
             />
             {/* 手機板排版 */}
             <HeaderTwo handleSidebar={() => setSidebar(!sidebar)} />

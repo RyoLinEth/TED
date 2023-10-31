@@ -9,7 +9,7 @@ import StorePopUp from "./StorePopUp";
 import ToggleBtn from "./ToggleBtn";
 import ModeToggler from "./ModeToggler";
 
-function HeaderOne({ handleSidebar, isConnectingWallet, defaultAcount }) {
+function HeaderOne({ handleSidebar, isConnectingWallet }) {
   const isNotificationActive = false;
   const isGiftActive = false;
 
@@ -121,7 +121,7 @@ function HeaderOne({ handleSidebar, isConnectingWallet, defaultAcount }) {
             </div>
             <div className="hidden h-[48px] w-[1px] bg-bgray-300 dark:bg-darkblack-400 xl:block"></div>
             {/* author */}
-            <Author walletConnect={handleWalletConnect} defaultAccount={defaultAcount}/>
+            <Author walletConnect={handleWalletConnect}/>
           </div>
           {/* notification ,message, store */}
 

@@ -1,7 +1,11 @@
+import { useContext } from "react";
 import profile from "../../assets/images/avatar/profile-52x52.png";
 import ProtoTypes from "prop-types";
+import MyContext from "../../DataProvider";
 
-function Author({ walletConnect, defaultAccount }) {
+function Author({ walletConnect }) {
+  const { defaultAccount } = useContext(MyContext)
+  
   const showWalletText = defaultAccount === undefined || defaultAccount === null
     ? "连接钱包"
     : defaultAccount.slice(0, 4) + "..." + defaultAccount.slice(-4);

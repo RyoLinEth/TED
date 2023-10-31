@@ -60,16 +60,15 @@ function UserData({ userInfo, index }) {
       </td>
       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
         <span
-          className={`bg-success-50 dark:bg-darkblack-500 text-sm ${
-            workingCategory === "Full Time"
+          className={`bg-success-50 dark:bg-darkblack-500 text-sm ${workingCategory === "Full Time"
               ? "text-success-300"
               : "text-error-300"
-          } font-medium rounded-lg py-1 px-3`}
+            } font-medium rounded-lg py-1 px-3`}
         >
           {workingCategory}
         </span>
       </td>
-      <td className="whitespace-nowrap px-2 py-4 text-sm text-gray-500">
+      {/* <td className="whitespace-nowrap px-2 py-4 text-sm text-gray-500">
         <span
           className={`bg-bamber-50  dark:bg-darkblack-500 rounded-lg text-sm ${
             level === "Senior" ? "text-bamber-500" : "text-error-300"
@@ -77,18 +76,27 @@ function UserData({ userInfo, index }) {
         >
           {level} Level
         </span>
-      </td>
+      </td> */}
       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-        <Link
-          to="/messages"
-          className={`${
-            isOnline
+
+        <a
+          href={designation}
+          className={`${isOnline
               ? "bg-success-300 hover:bg-success-400"
               : "bg-darkblack-500 hover:bg-darkblack-400"
-          } transition duration-300 ease-in-out ml-6 font-semibold text-white py-3 flex items-center justify-center rounded-xl px-11`}
+            } transition duration-300 ease-in-out ml-6 font-semibold text-white py-3 flex items-center justify-center rounded-xl px-11`}
         >
-          Message
-        </Link>
+          Visit
+        </a>
+        {/* <Link
+          to="/messages"
+          className={`${isOnline
+              ? "bg-success-300 hover:bg-success-400"
+              : "bg-darkblack-500 hover:bg-darkblack-400"
+            } transition duration-300 ease-in-out ml-6 font-semibold text-white py-3 flex items-center justify-center rounded-xl px-11`}
+        >
+          Visit
+        </Link> */}
       </td>
       <td className="whitespace-nowrap pr-3 py-4 text-sm text-gray-500 rounded-r-lg">
         <button aria-label="none" className="">

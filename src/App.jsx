@@ -2,6 +2,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
 import Router from "./Router";
+import { DataProvider } from "./DataProvider";
 
 function App() {
   useEffect(() => {
@@ -10,7 +11,9 @@ function App() {
   }, []);
   return (
     <>
-      <Router />
+      <DataProvider>
+        <Router />
+      </DataProvider>
     </>
   );
 }

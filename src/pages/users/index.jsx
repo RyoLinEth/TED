@@ -11,7 +11,7 @@ function Users() {
           <UserFilter />
           <UsersList />
         </div>
-        <RightSidebar />
+        {/* <RightSidebar /> */}
       </div>
     </main>
   );
