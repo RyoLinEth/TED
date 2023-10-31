@@ -6,7 +6,7 @@ import Analytics from "./pages/analytics";
 import Transaction from "./pages/transaction";
 import MyWallet from "./pages/myWallet";
 import Inbox from "./pages/inbox";
-import Integrations from "./pages/Integrations";
+import Integrations from "./pages/integrations";
 import Users from "./pages/users";
 import Calender from "./pages/calender";
 import History from "./pages/history";
@@ -23,7 +23,7 @@ import ProgramAndResources from "./pages/settings/program&resourses";
 import Payment from "./pages/settings/payment";
 import Faq from "./pages/settings/faq";
 import Security from "./pages/settings/security";
-import TermsAndCondition from "./pages/settings/Terms&condition";
+import TermsAndCondition from "./pages/settings/terms&condition";
 import HomeFive from "./pages/homeFive";
 
 const router = createBrowserRouter([
