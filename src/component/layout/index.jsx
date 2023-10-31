@@ -33,7 +33,6 @@ function Layout({ bg, overlay, children }) {
       window.ethereum.request({ method: 'eth_requestAccounts' })
         .then(async (result) => {
           await accountChangeHandler(result[0]);
-          setConnectButtonText(`${result[0].slice(0, 4)}...${result[0].slice(-4)}`);
         })
     } else {
       alert('Need to install MetaMask!')

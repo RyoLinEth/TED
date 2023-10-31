@@ -1,8 +1,24 @@
 import totalEarn from "../../assets/images/icons/total-earn.svg";
 import memberImg from "../../assets/images/avatar/members-2.png";
 import TotalWidgetCard from "./TotalWidgetCard";
+import { useContext, useEffect, useState } from "react";
+import MyContext from "../../DataProvider";
 
 function TotalWidget() {
+  const { defaultAccount } = useContext(MyContext)
+  const connectWalletText = "請連接錢包"
+  const [tedPrice, setTedPrice] = useState(connectWalletText);
+  const [tedAmount, setTedAmount] = useState(connectWalletText);
+
+  useEffect(() => {
+    const setData = () => {
+      setTedPrice("0");
+      setTedAmount("0");
+    }
+    if (defaultAccount === null || defaultAccount === undefined) return;
+    setData();
+  }, [defaultAccount])
+
   return (
     <div className="mb-[24px] w-full">
       <div className="grid grid-cols-1 gap-[24px] lg:grid-cols-3">
@@ -10,7 +26,7 @@ function TotalWidget() {
           totalEarnImg={totalEarn}
           memberImg={memberImg}
           title="$TED Price"
-          amount="NaN"
+          amount={tedPrice}
           groth="+ 3.5%"
           id="totalEarn"
         />
@@ -18,18 +34,10 @@ function TotalWidget() {
           totalEarnImg={totalEarn}
           memberImg={memberImg}
           title="TED Holding"
-          amount="7,245.00"
+          amount={tedAmount}
           groth="+ 3.5%"
           id="totalSpending"
         />
-        {/* <TotalWidgetCard
-          totalEarnImg={totalEarn}
-          memberImg={memberImg}
-          title="Spending Goal"
-          amount="7,245.00"
-          groth="+ 3.5%"
-          id="totalGoal"
-        /> */}
       </div>
     </div>
   );

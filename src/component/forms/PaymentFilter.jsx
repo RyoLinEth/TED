@@ -1,8 +1,12 @@
 import { useState } from "react";
 import mastar from "../../assets/images/payments/master-mini.svg";
 
-function PaymentFilter() {
+function PaymentFilter({ amount, setPercentage }) {
   const [activeFilter, setActiveFilter] = useState(false);
+  const handlePercentageChosen = (value) => {
+    setActiveFilter(!activeFilter);
+    setPercentage(value)
+  }
   return (
     <div className="payment-select relative mb-3">
       <button
@@ -21,7 +25,11 @@ function PaymentFilter() {
         </div>
         <div className="flex items-center space-x-2">
           <span className="text-sm font-bold text-bgray-900 dark:text-bgray-50">
-            $10,431
+            {
+              amount === null
+                ? "請連接錢包"
+                : amount
+            }
           </span>
           <span className="text-sm font-medium text-bgray-900">
             <svg
@@ -49,25 +57,25 @@ function PaymentFilter() {
       >
         <ul>
           <li
-            onClick={() => setActiveFilter(!activeFilter)}
+            onClick={() => handlePercentageChosen(25)}
             className="text-bgray-90 cursor-pointer px-5 py-2 text-sm font-semibold hover:bg-bgray-100 dark:text-white hover:dark:bg-darkblack-600"
           >
             25%
           </li>
           <li
-            onClick={() => setActiveFilter(!activeFilter)}
+            onClick={() => handlePercentageChosen(50)}
             className="cursor-pointer px-5 py-2 text-sm font-semibold text-bgray-900 hover:bg-bgray-100 dark:text-white hover:dark:bg-darkblack-600"
           >
             50%
           </li>
           <li
-            onClick={() => setActiveFilter(!activeFilter)}
+            onClick={() => handlePercentageChosen(75)}
             className="cursor-pointer px-5 py-2 text-sm font-semibold text-bgray-900 hover:bg-bgray-100 dark:text-white hover:dark:bg-darkblack-600"
           >
             75%
           </li>
           <li
-            onClick={() => setActiveFilter(!activeFilter)}
+            onClick={() => handlePercentageChosen(100)}
             className="cursor-pointer px-5 py-2 text-sm font-semibold text-bgray-900 hover:bg-bgray-100 dark:text-white hover:dark:bg-darkblack-600"
           >
             100%
