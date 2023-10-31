@@ -1,5 +1,3 @@
-import ListTab from "../../component/listTab";
-import TeamChat from "../../component/teamChat";
 import Wallet from "../../component/wallet";
 
 function Transaction() {
