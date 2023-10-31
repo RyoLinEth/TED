@@ -1,4 +1,3 @@
-import member from "../../assets/images/avatar/members-3.png";
 import card1 from "../../assets/images/payments/card-1.svg";
 import PaymentFilter from "../forms/PaymentFilter";
 import GreenBtn from "../button/AddMony";
@@ -7,10 +6,8 @@ import MyContext from "../../DataProvider";
 import USDTABI from '../../assets/abi/USDTABI.json'
 import { ethers } from 'ethers'
 
-const USDTContractAddress = "0x55d398326f99059fF775485246999027B3197955"
-
 function Wallet() {
-  const { defaultAccount } = useContext(MyContext);
+  const { defaultAccount, USDTContractAddress } = useContext(MyContext);
 
   // const [USDTContract, setUSDTContract] = useState(null);
   const [USDTAmount, setUSDTAmount] = useState(null)
@@ -21,6 +18,7 @@ function Wallet() {
 
   useEffect(() => {
     if (defaultAccount === null || defaultAccount === undefined) return;
+    if (USDTContractAddress === null || USDTContractAddress === undefined) return;
     updateEthers();
     setConnectingAccount(defaultAccount.slice(0, 4) + "..." + defaultAccount.slice(-4))
   }, [defaultAccount])
@@ -43,6 +41,11 @@ function Wallet() {
     } catch (err) {
       console.log(err)
     }
+  }
+
+  const makeSwap = () => {
+    console.log("Making Swap ...")
+    alert("Swap 功能尚未開放")
   }
   const handlePercentageChosen = (value) => {
     const numberToSell = (USDTAmount * value / 100).toFixed(4)
@@ -93,7 +96,7 @@ function Wallet() {
             </label>
           </div>
         </div>
-        <GreenBtn text="Make Swap" className="mt-7" />
+        <GreenBtn text="Make Swap" className="mt-7" action={makeSwap}/>
       </div>
     </div>
   );

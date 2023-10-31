@@ -1,4 +1,3 @@
-import GreenBtn from "../button/AddMony";
 import TransparentBtn from "../button/TransparentBtn";
 
 function AddBalance({ title, content, currency, showSvgContent, showButton }) {

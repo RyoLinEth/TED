@@ -1,19 +1,102 @@
 import { useContext } from "react";
-import LineChart from "../chart/LineChart";
-import DateFilter from "../forms/DateFilter";
-import { ThemeContext } from "../layout";
-import { useRef } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ethers } from "ethers";
 import PieChart from "../chart/PieChart";
-import Task from "./Task";
+import GreenBtn from "../button/AddMony";
+import MyContext from "../../DataProvider";
+import USDTABI from '../../assets/abi/USDTABI.json'
 
+//  礦機合約
 function SummaryV2({ width, height }) {
+  const { defaultAccount, USDTContractAddress, MinerContractAddress } = useContext(MyContext);
+
+  const [amountToMint, setAmountToMint] = useState(0);
+  const [isUSDTNotApproved, setIsUSDTNotApproved] = useState(null);
+  const [isUSDNotApproved, setIsUSDNotApproved] = useState(null);
+
+  const [USDTAllowance, setUSDTAllowance] = useState(0);
+
+  const [provider, setProvider] = useState(null)
+  const [signer, setSigner] = useState(null);
+  const [USDTContract, setUSDTContract] = useState(null);
+  const [USDTDecimal, setUSDTDecimal] = useState(null);
+
+  useEffect(() => {
+    if (defaultAccount === null || defaultAccount === undefined) return;
+    updateEthers()
+  }, [defaultAccount])
+
+  useEffect(() => {
+    const checkTwoTokens = () => {
+      checkUSDTApprovalAgain()
+    }
+    const checkUSDTApprovalAgain = async () => {
+      if (isUSDTNotApproved) return;
+      const amountToApprove = ethers.utils.parseEther(`${amountToMint * 10}`, USDTDecimal);
+      if (+USDTAllowance >= +amountToApprove) {
+        console.log("No Need To Approve More");
+      } else {
+        setIsUSDTNotApproved(false);
+      }
+    }
+
+    checkTwoTokens()
+  }, [amountToMint])
+
+  const updateEthers = async () => {
+    try {
+      const tempProvider = new ethers.providers.Web3Provider(window.ethereum);
+      setProvider(tempProvider);
+      const tempSigner = tempProvider.getSigner();
+      setSigner(tempSigner);
+
+      //  合約資料
+      const tempUSDTContract = new ethers.Contract(USDTContractAddress, USDTABI, tempSigner)
+      setUSDTContract(tempUSDTContract);
+
+      const tempUSDTAllowance = await tempUSDTContract.allowance(defaultAccount, MinerContractAddress);
+      const tempUSDTDecimal = await tempUSDTContract.decimals();
+      setUSDTDecimal(tempUSDTDecimal);
+
+      const realAmount = ethers.utils.formatUnits(`${tempUSDTAllowance}`, tempUSDTDecimal);
+      const result = Number.isInteger(realAmount) ? realAmount : Number(realAmount).toFixed(4);
+
+      setUSDTAllowance(result)
+      if (+result === 0) setIsUSDTNotApproved(true);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const approveUSDT = async () => {
+    const amountToApprove = ethers.utils.parseEther(`${amountToMint * 10}`, USDTDecimal);
+    console.log(amountToApprove);
+    console.log("Approving USDT")
+    const approveResult = await USDTContract.approve(MinerContractAddress, amountToApprove)
+    console.log(approveResult)
+  }
+
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+
+    // Check if the input is a valid integer
+    if (/^(0|[1-9]\d*)$/.test(value)) {
+      setAmountToMint(parseInt(value, 10)); // Parse the input as an integer
+    } else {
+      // Handle invalid input, e.g., display an error message
+      // You can also choose to ignore or clear the input
+    }
+  };
+  const mintMiner = () => {
+    console.log("Minting Miner ... ");
+
+  }
 
   return (
     <div className="w-full rounded-lg px-5 py-6 bg-white dark:bg-darkblack-600 h-full">
       <div className="flex justify-between items-center pb-2 mb-2 border-b border-bgray-300">
         <h3 className="text-bgray-900 dark:text-white sm:text-2xl text-xl font-bold">
-          Miner Mined
+          礦機使用情形
         </h3>
         <div className="mb-4 flex items-center space-x-8">
           <div
@@ -29,110 +112,42 @@ function SummaryV2({ width, height }) {
           礦機合成
         </h2>
       </div>
-      <div className="flex space-x-3 mb-10">
-        <Task
-          title="授權 USDT"
-          value="授權"
-          className="bg-success-300"
-          fontColor="dark:text-bgray-900  text-white"
-        >
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle
-              opacity="0.5"
-              cx="20"
-              cy="20"
-              r="19.5"
-              className="stroke-white dark:stroke-bgray-900"
-            />
-            <path
-              opacity="0.4"
-              d="M21 16.86L21 14.3567C21 13.2506 20.1046 12.354 19 12.354L17.6667 12.354C17.2339 12.354 16.8129 12.2135 16.4667 11.9535L15.5333 11.2526C15.1871 10.9926 14.7661 10.8521 14.3333 10.8521L13 10.8521C11.8954 10.8521 11 11.7487 11 12.8547L11 16.86C11 17.966 11.8954 18.8626 13 18.8626L19 18.8626C20.1046 18.8626 21 17.966 21 16.86Z"
-              className="fill-white dark:fill-bgray-900"
-            />
-            <path
-              opacity="0.4"
-              d="M29 28.8758L29 26.3725C29 25.2665 28.1046 24.3699 27 24.3699L25.6667 24.3699C25.2339 24.3699 24.8129 24.2294 24.4667 23.9694L23.5333 23.2684C23.1871 23.0085 22.7661 22.8679 22.3333 22.8679L21 22.8679C19.8954 22.8679 19 23.7645 19 24.8706L19 28.8758C19 29.9819 19.8954 30.8785 21 30.8785L27 30.8785C28.1046 30.8785 29 29.9819 29 28.8758Z"
-              className="fill-white dark:fill-bgray-900"
-            />
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M22.25 14.8572C22.25 14.4424 22.5858 14.1062 23 14.1062L25 14.1062C26.5188 14.1062 27.75 15.339 27.75 16.8598L27.75 22.3671C27.75 22.7819 27.4142 23.1181 27 23.1181C26.5858 23.1181 26.25 22.7819 26.25 22.3671L26.25 16.8598C26.25 16.1686 25.6904 15.6082 25 15.6082L23 15.6082C22.5858 15.6082 22.25 15.272 22.25 14.8572ZM13 20.1141C13.4142 20.1141 13.75 20.4504 13.75 20.8651L13.75 24.8704C13.75 25.5617 14.3096 26.1221 15 26.1221L17 26.1221C17.4142 26.1221 17.75 26.4583 17.75 26.873C17.75 27.2878 17.4142 27.624 17 27.624L15 27.624C13.4812 27.624 12.25 26.3912 12.25 24.8704L12.25 20.8651C12.25 20.4504 12.5858 20.1141 13 20.1141Z"
-              className="fill-white dark:fill-bgray-900"
-            />
-          </svg>
-        </Task>
-        <Task
-          title="授權 USD"
-          value="授權"
-          className="bg-success-300"
-          fontColor="dark:text-bgray-900  text-white"
-        >
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle
-              opacity="0.5"
-              cx="20"
-              cy="20"
-              r="19.5"
-              className="stroke-white dark:stroke-bgray-900"
-            />
-            <path
-              opacity="0.4"
-              d="M21 16.86L21 14.3567C21 13.2506 20.1046 12.354 19 12.354L17.6667 12.354C17.2339 12.354 16.8129 12.2135 16.4667 11.9535L15.5333 11.2526C15.1871 10.9926 14.7661 10.8521 14.3333 10.8521L13 10.8521C11.8954 10.8521 11 11.7487 11 12.8547L11 16.86C11 17.966 11.8954 18.8626 13 18.8626L19 18.8626C20.1046 18.8626 21 17.966 21 16.86Z"
-              className="fill-white dark:fill-bgray-900"
-            />
-            <path
-              opacity="0.4"
-              d="M29 28.8758L29 26.3725C29 25.2665 28.1046 24.3699 27 24.3699L25.6667 24.3699C25.2339 24.3699 24.8129 24.2294 24.4667 23.9694L23.5333 23.2684C23.1871 23.0085 22.7661 22.8679 22.3333 22.8679L21 22.8679C19.8954 22.8679 19 23.7645 19 24.8706L19 28.8758C19 29.9819 19.8954 30.8785 21 30.8785L27 30.8785C28.1046 30.8785 29 29.9819 29 28.8758Z"
-              className="fill-white dark:fill-bgray-900"
-            />
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M22.25 14.8572C22.25 14.4424 22.5858 14.1062 23 14.1062L25 14.1062C26.5188 14.1062 27.75 15.339 27.75 16.8598L27.75 22.3671C27.75 22.7819 27.4142 23.1181 27 23.1181C26.5858 23.1181 26.25 22.7819 26.25 22.3671L26.25 16.8598C26.25 16.1686 25.6904 15.6082 25 15.6082L23 15.6082C22.5858 15.6082 22.25 15.272 22.25 14.8572ZM13 20.1141C13.4142 20.1141 13.75 20.4504 13.75 20.8651L13.75 24.8704C13.75 25.5617 14.3096 26.1221 15 26.1221L17 26.1221C17.4142 26.1221 17.75 26.4583 17.75 26.873C17.75 27.2878 17.4142 27.624 17 27.624L15 27.624C13.4812 27.624 12.25 26.3912 12.25 24.8704L12.25 20.8651C12.25 20.4504 12.5858 20.1141 13 20.1141Z"
-              className="fill-white dark:fill-bgray-900"
-            />
-          </svg>
-        </Task>
-        <Task
-          title="Completed"
-          value="40"
-          className="bg-bgray-50 dark:bg-darkblack-700"
-        >
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle opacity="0.5" cx="20" cy="20" r="19.5" stroke="#CBD5E1" />
-            <path
-              opacity="0.4"
-              d="M29 25V18C29 15.7909 27.2987 14 25.2 14H22.6667C21.8445 14 21.0444 13.7193 20.3867 13.2L18.6133 11.8C17.9556 11.2807 17.1555 11 16.3333 11H13.8C11.7013 11 10 12.7909 10 15V25C10 27.2091 11.7013 29 13.8 29H25.2C27.2987 29 29 27.2091 29 25Z"
-              fill="#22C55E"
-            />
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M23.4939 18.4356C23.8056 18.7083 23.8372 19.1822 23.5645 19.4939L20.6946 22.7738C20.0779 23.4786 19.0156 23.5729 18.2843 22.9879L16.5315 21.5857C16.2081 21.3269 16.1556 20.8549 16.4144 20.5315C16.6731 20.208 17.1451 20.1556 17.4685 20.4144L19.2214 21.8166C19.3258 21.9002 19.4776 21.8867 19.5657 21.786L22.4356 18.5061C22.7084 18.1944 23.1822 18.1628 23.4939 18.4356Z"
-              fill="#22C55E"
-            />
-          </svg>
-        </Task>
+      <div className="flex justify-between items-center mb-8">
+        <h3 className="text-base xl:text-xl text-bgray-900 dark:text-white font-bold">
+          礦機價格
+        </h3>
+        10 USDT + 10 USD/1台
       </div>
+      <div className="flex space-x-3 mb-10">
+        {
+          isUSDTNotApproved &&
+          < GreenBtn text="授權USDT" className="mt-7" action={approveUSDT} />
+        }
+        {
+          isUSDNotApproved &&
+          <GreenBtn text="授權USD" className="mt-7" action={approveUSDT} />
+        }
+      </div>
+
+      <div className="flex h-[98px] w-full flex-col justify-between rounded-lg border border-bgray-200 p-4 focus-within:border-success-300 dark:border-darkblack-400">
+        <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
+          輸入合成礦機數量
+        </p>
+        <div className="flex h-[35px] w-full items-center justify-between">
+          <span className="text-2xl font-bold text-bgray-900 dark:text-white">
+            {/* $ */}
+          </span>
+          <label className="w-full">
+            <input
+              type="number"
+              className="w-full border-none p-0 text-2xl font-bold text-bgray-900 focus:outline-none focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-600 dark:text-white"
+              defaultValue={amountToMint}
+              onChange={handleInputChange}
+            />
+          </label>
+        </div>
+      </div>
+      < GreenBtn text="合成" className="mt-7" action={mintMiner} />
 
       <div>
         <p className="text-xs text-bgray-500 dark:text-white mb-2">
