@@ -3,7 +3,7 @@ import Home from "./pages/home";
 import HomeTwo from "./pages/homeTwo";
 import Statistics from "./pages/statistics";
 import Analytics from "./pages/analytics";
-import Transaction from "./pages/Transaction";
+import Transaction from "./pages/transaction";
 import MyWallet from "./pages/myWallet";
 import Inbox from "./pages/inbox";
 import Integrations from "./pages/Integrations";
