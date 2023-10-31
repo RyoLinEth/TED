@@ -7,11 +7,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import ResProfilePopup from "./ResProfilePopup";
 
-function HeaderTwo({ handleSidebar }) {
+function HeaderTwo({ handleSidebar,isConnectingWallet }) {
   const [activePopup, handleActivePopup] = useState(false);
 
   const handleWalletConnect = () => {
-    console.log("Connecting Wallet")
+    isConnectingWallet(true);
   }
   return (
     <div>

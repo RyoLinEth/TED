@@ -98,7 +98,9 @@ function Layout({ bg, overlay, children }) {
               isConnectingWallet={handleWalletConnect}
             />
             {/* 手機板排版 */}
-            <HeaderTwo handleSidebar={() => setSidebar(!sidebar)} />
+            <HeaderTwo handleSidebar={() => setSidebar(!sidebar)}
+              isConnectingWallet={handleWalletConnect}
+            />
             <Outlet />
             {children}
           </div>
