@@ -242,7 +242,7 @@ function Footer() {
       <hr className="w-full bg-[#7476813B] opacity-25" />
 
       <span className="text-white text-center xl:text-xl text-sm font-medium leading-160 p-[22px]">
-        Copyright © 2023 – All Rights Reserved. Made by BankCo
+        Copyright © 2023 – All Rights Reserved. Made by TED
       </span>
     </section>
   );

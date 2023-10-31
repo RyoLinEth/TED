@@ -183,7 +183,7 @@ function Wallet() {
         <PaymentFilter
           amount={USDTAmount}
           setPercentage={handlePercentageChosen}
-          tokenName={"USD"}
+          tokenName={"USDT"}
         />
         <div className="flex h-[98px] w-full flex-col justify-between rounded-lg border border-bgray-200 p-4 focus-within:border-success-300 dark:border-darkblack-400">
           <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">

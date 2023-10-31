@@ -322,7 +322,7 @@ function SummaryV2({ width, height }) {
 
       <div>
         <p className="text-xs text-bgray-500 dark:text-white mb-2">
-          礦機持有數量
+          持有算力
         </p>
         <div className="flex space-x-4 items-end">
           <span className="text-bgray-900 dark:text-white font-bold text-2xl leading-[30px]">

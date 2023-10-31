@@ -503,7 +503,7 @@ function Sidebar({ handleActive }) {
           <p className="text-sm text-[#969BA0]">© 2023 All Rights Reserved</p>
           <p className="text-sm font-medium text-bgray-700">
             <a
-              href="https://t.me/"
+              href="https://dapp.tedusd.online/"
               target="_blank"
               className="border-b font-semibold hover:text-blue-600"
             >

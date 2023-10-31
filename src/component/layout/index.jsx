@@ -8,6 +8,7 @@ import HeaderTwo from "../header/HeaderTwo";
 import { createContext } from "react";
 import { Outlet } from "react-router-dom";
 import MyContext from "../../DataProvider";
+import swal from "sweetalert";
 
 export const ThemeContext = createContext(null);
 
@@ -56,7 +57,7 @@ function Layout({ bg, overlay, children }) {
     if (chainId !== netWorkID) {
       // setCorrectNetwork(network => network = false)
       setCorrectNetwork(false)
-      swal("Error", "Please Connect to the Correct Network", "error")
+      swal("網路錯誤", "請連接到正確網路", "error")
     } else {
       setCorrectNetwork(true)
     }
