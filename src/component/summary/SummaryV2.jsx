@@ -5,38 +5,74 @@ import PieChart from "../chart/PieChart";
 import GreenBtn from "../button/AddMony";
 import MyContext from "../../DataProvider";
 import USDTABI from '../../assets/abi/USDTABI.json'
+import MinerABI from '../../assets/abi/MinerABI.json'
+import LoadingAnimation from "../animation/LoadingAnimation";
+import Popup from "../Popup/Popup";
 
 //  礦機合約
 function SummaryV2({ width, height }) {
-  const { defaultAccount, USDTContractAddress, MinerContractAddress } = useContext(MyContext);
+  const {
+    defaultAccount,
+    USDTContractAddress,
+    USDContractAddress,
+    MinerContractAddress
+  } = useContext(MyContext);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupTitle, setPopupTitle] = useState(null);
+  const [popupContent, setPopupContent] = useState(null);
 
   const [amountToMint, setAmountToMint] = useState(0);
   const [isUSDTNotApproved, setIsUSDTNotApproved] = useState(null);
   const [isUSDNotApproved, setIsUSDNotApproved] = useState(null);
 
   const [USDTAllowance, setUSDTAllowance] = useState(0);
+  const [USDAllowance, setUSDAllowance] = useState(0);
 
   const [provider, setProvider] = useState(null)
   const [signer, setSigner] = useState(null);
   const [USDTContract, setUSDTContract] = useState(null);
   const [USDTDecimal, setUSDTDecimal] = useState(null);
 
+  const [USDContract, setUSDContract] = useState(null);
+  const [USDDecimal, setUSDDecimal] = useState(null);
+
+  const [MinerContract, setMinerContract] = useState(null);
+  const [MinerAmount, setMinerAmount] = useState(0);
+
   useEffect(() => {
     if (defaultAccount === null || defaultAccount === undefined) return;
+    if (USDTContractAddress === null || USDContractAddress === null || MinerContractAddress === null) return;
     updateEthers()
   }, [defaultAccount])
 
   useEffect(() => {
-    const checkTwoTokens = () => {
-      checkUSDTApprovalAgain()
+    if (amountToMint === 0) return;
+    const checkTwoTokens = async () => {
+      console.log("Checking Allowance")
+      await checkUSDTApprovalAgain()
+      await checkUSDApprovalAgain()
     }
-    const checkUSDTApprovalAgain = async () => {
-      if (isUSDTNotApproved) return;
-      const amountToApprove = ethers.utils.parseEther(`${amountToMint * 10}`, USDTDecimal);
-      if (+USDTAllowance >= +amountToApprove) {
-        console.log("No Need To Approve More");
+
+    const checkUSDApprovalAgain = async () => {
+      const amountToApprove = amountToMint * 10;
+      console.log("USDAllowance : " + USDAllowance)
+      if (+USDAllowance >= +amountToApprove) {
+        console.log("No Need To Approve USD More");
+        setIsUSDNotApproved(false);
       } else {
+        setIsUSDNotApproved(true);
+      }
+    }
+
+    const checkUSDTApprovalAgain = async () => {
+      const amountToApprove = amountToMint * 10;
+      console.log("USDTAllowance : " + USDTAllowance)
+      if (+USDTAllowance >= +amountToApprove) {
+        console.log("No Need To Approve USDT More");
         setIsUSDTNotApproved(false);
+      } else {
+        setIsUSDTNotApproved(true);
       }
     }
 
@@ -53,27 +89,98 @@ function SummaryV2({ width, height }) {
       //  合約資料
       const tempUSDTContract = new ethers.Contract(USDTContractAddress, USDTABI, tempSigner)
       setUSDTContract(tempUSDTContract);
-
       const tempUSDTAllowance = await tempUSDTContract.allowance(defaultAccount, MinerContractAddress);
       const tempUSDTDecimal = await tempUSDTContract.decimals();
       setUSDTDecimal(tempUSDTDecimal);
 
-      const realAmount = ethers.utils.formatUnits(`${tempUSDTAllowance}`, tempUSDTDecimal);
-      const result = Number.isInteger(realAmount) ? realAmount : Number(realAmount).toFixed(4);
-
+      const realUSDTAmount = ethers.utils.formatUnits(`${tempUSDTAllowance}`, tempUSDTDecimal);
+      const result = Number.isInteger(realUSDTAmount)
+        ? realUSDTAmount
+        : Number(realUSDTAmount).toFixed(4);
       setUSDTAllowance(result)
+
+
+      const tempUSDContract = new ethers.Contract(USDContractAddress, USDTABI, tempSigner)
+      setUSDContract(tempUSDContract);
+      const tempUSDAllowance = await tempUSDContract.allowance(defaultAccount, MinerContractAddress);
+      const tempUSDDecimal = await tempUSDContract.decimals();
+      setUSDDecimal(tempUSDDecimal);
+
+      const realUSDAmount = ethers.utils.formatUnits(`${tempUSDAllowance}`, tempUSDDecimal);
+      const result2 = Number.isInteger(realUSDAmount)
+        ? realUSDAmount
+        : Number(realUSDAmount).toFixed(4);
+      setUSDAllowance(result2)
+
+      const tempMinerContract = new ethers.Contract(MinerContractAddress, MinerABI, tempSigner);
+      setMinerContract(tempMinerContract);
+      const tempMinerAmount = await tempMinerContract.personalMinerAmount(defaultAccount)
+      const realMinerPower = ethers.utils.formatUnits(`${tempMinerAmount}`, 0);
+      setMinerAmount(realMinerPower)
+
       if (+result === 0) setIsUSDTNotApproved(true);
+      if (+result2 === 0) setIsUSDNotApproved(true);
     } catch (err) {
       console.log(err)
     }
   }
 
+  const setPopup = (title, content) => {
+    setShowPopup(true);
+    setPopupTitle(title);
+    setPopupContent(content);
+  }
   const approveUSDT = async () => {
-    const amountToApprove = ethers.utils.parseEther(`${amountToMint * 10}`, USDTDecimal);
-    console.log(amountToApprove);
+    setPopup("授權USDT", `正在授權 ${amountToMint * 10} USDT`);
+    const amountToApprove = ethers.utils.parseUnits(`${amountToMint * 10}`, USDTDecimal);
     console.log("Approving USDT")
     const approveResult = await USDTContract.approve(MinerContractAddress, amountToApprove)
     console.log(approveResult)
+
+    provider
+      .getTransaction(approveResult.hash)
+      .then((tx) => {
+        // 監聽交易上鍊事件
+        tx.wait().then(async (receipt) => {
+          //  授權成功
+          console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
+          setPopup("成功授權", `${amountToMint * 10} USDT 已成功授權`);
+          setIsUSDTNotApproved(false);
+          const tempUSDTAllowance = await USDTContract.allowance(defaultAccount, MinerContractAddress);
+          const realUSDTAllowance = ethers.utils.formatUnits(`${tempUSDTAllowance}`, USDTDecimal);
+          const result = Number.isInteger(realUSDTAllowance)
+            ? realUSDTAllowance
+            : Number(realUSDTAllowance).toFixed(4);
+          setUSDTAllowance(result)
+        })
+      })
+  }
+
+  const approveUSD = async () => {
+    setPopup("授權USD", `正在授權 ${amountToMint * 10} USD`);
+    const amountToApprove = ethers.utils.parseUnits(`${amountToMint * 10}`, USDDecimal);
+    console.log(amountToApprove);
+    console.log("Approving USD")
+    const approveResult = await USDContract.approve(MinerContractAddress, amountToApprove)
+    console.log(approveResult)
+
+    provider
+      .getTransaction(approveResult.hash)
+      .then((tx) => {
+        // 監聽交易上鍊事件
+        tx.wait().then(async (receipt) => {
+          //  授權成功
+          console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
+          setPopup("成功授權", `${amountToMint * 10} USD 已成功授權`);
+          setIsUSDNotApproved(false);
+          const tempUSDAllowance = await USDContract.allowance(defaultAccount, MinerContractAddress);
+          const realUSDAllowance = ethers.utils.formatUnits(`${tempUSDAllowance}`, USDDecimal);
+          const result = Number.isInteger(realUSDAllowance)
+            ? realUSDAllowance
+            : Number(realUSDAllowance).toFixed(4);
+          setUSDAllowance(result)
+        })
+      })
   }
 
   const handleInputChange = (event) => {
@@ -87,13 +194,44 @@ function SummaryV2({ width, height }) {
       // You can also choose to ignore or clear the input
     }
   };
-  const mintMiner = () => {
+  const mintMiner = async () => {
+    setPopup("合成礦機", `正在合成 ${amountToMint} 台礦機`);
     console.log("Minting Miner ... ");
-
+    const result = await MinerContract.mint(amountToMint)
+    console.log(result)
+    provider
+      .getTransaction(result.hash)
+      .then((tx) => {
+        // 監聽交易上鍊事件
+        tx.wait().then(async (receipt) => {
+          //  授權成功
+          console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
+          setPopup("礦機成功合成", `已成功合成 ${amountToMint}台礦機`);
+          const newMiners = MinerContract.personalMinerAmount(defaultAccount);
+          const realMinerPower = ethers.utils.formatUnits(`${newMiners}`, 0);
+          setMinerAmount(realMinerPower)
+        })
+      })
   }
+
+  const openPopup = () => {
+    setShowPopup(true);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
 
   return (
     <div className="w-full rounded-lg px-5 py-6 bg-white dark:bg-darkblack-600 h-full">
+      {showPopup && (
+        <Popup onClose={closePopup}>
+          <h2 className="text-base xl:text-2xl text-bgray-900 dark:text-white font-bold">
+            {popupTitle}
+          </h2>
+          <p>{popupContent}</p>
+        </Popup>
+      )}
       <div className="flex justify-between items-center pb-2 mb-2 border-b border-bgray-300">
         <h3 className="text-bgray-900 dark:text-white sm:text-2xl text-xl font-bold">
           礦機使用情形
@@ -120,12 +258,12 @@ function SummaryV2({ width, height }) {
       </div>
       <div className="flex space-x-3 mb-10">
         {
-          isUSDTNotApproved &&
+          (isUSDTNotApproved && amountToMint !== 0) &&
           < GreenBtn text="授權USDT" className="mt-7" action={approveUSDT} />
         }
         {
-          isUSDNotApproved &&
-          <GreenBtn text="授權USD" className="mt-7" action={approveUSDT} />
+          (isUSDNotApproved && amountToMint !== 0) &&
+          <GreenBtn text="授權USD" className="mt-7" action={approveUSD} />
         }
       </div>
 
@@ -147,6 +285,25 @@ function SummaryV2({ width, height }) {
           </label>
         </div>
       </div>
+
+      <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
+        所需 USDT : {amountToMint * 10}
+        <span style={{ paddingLeft: '10px' }}>
+          {
+            +USDTAllowance >= +amountToMint * 10
+              ? "已授權" : "授權額度不足"
+          }
+        </span>
+        <br />
+        所需 USD : {amountToMint * 10}
+        <span style={{ paddingLeft: '10px' }}>
+          {
+            +USDAllowance >= +amountToMint * 10
+              ? "已授權" : "授權額度不足"
+          }
+        </span>
+        <br />
+      </p>
       < GreenBtn text="合成" className="mt-7" action={mintMiner} />
 
       <div>
@@ -155,7 +312,7 @@ function SummaryV2({ width, height }) {
         </p>
         <div className="flex space-x-4 items-end">
           <span className="text-bgray-900 dark:text-white font-bold text-2xl leading-[30px]">
-            10
+            {MinerAmount}
           </span>
           {/* <span className="text-xs font-medium text-success-300">+2,5%</span> */}
         </div>
