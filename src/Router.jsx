@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/home";
 import Statistics from "./pages/statistics";
 import Transaction from "./pages/transaction";
+import Transaction2 from "./pages/transaction2";
 import MyWallet from "./pages/myWallet";
 import Inbox from "./pages/inbox";
 import Users from "./pages/users";
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/swap",
         element: <Transaction />,
+      },
+      {
+        path: "/usdswap",
+        element: <Transaction2 />,
       },
       {
         path: "/miner",

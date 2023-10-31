@@ -1,7 +1,7 @@
 import { useState } from "react";
 import mastar from "../../assets/images/payments/master-mini.svg";
 
-function PaymentFilter({ amount, setPercentage }) {
+function PaymentFilter({ amount, setPercentage, tokenName }) {
   const [activeFilter, setActiveFilter] = useState(false);
   const handlePercentageChosen = (value) => {
     setActiveFilter(!activeFilter);
@@ -20,7 +20,7 @@ function PaymentFilter({ amount, setPercentage }) {
             <img src={mastar} alt="master" />
           </span>
           <span className="text-sm font-medium text-bgray-900 dark:text-white">
-            TED Balance
+            {tokenName} 餘額
           </span>
         </div>
         <div className="flex items-center space-x-2">

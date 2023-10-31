@@ -7,7 +7,7 @@ import USDTABI from '../../assets/abi/USDTABI.json'
 import { ethers } from 'ethers'
 
 function Wallet() {
-  const { defaultAccount, USDTContractAddress } = useContext(MyContext);
+  const { defaultAccount, TEDAddress } = useContext(MyContext);
 
   // const [USDTContract, setUSDTContract] = useState(null);
   const [USDTAmount, setUSDTAmount] = useState(null)
@@ -18,17 +18,20 @@ function Wallet() {
 
   useEffect(() => {
     if (defaultAccount === null || defaultAccount === undefined) return;
-    if (USDTContractAddress === null || USDTContractAddress === undefined) return;
+    
+    if (TEDAddress === null || TEDAddress === undefined) return;
+    console.log(2)
     updateEthers();
     setConnectingAccount(defaultAccount.slice(0, 4) + "..." + defaultAccount.slice(-4))
   }, [defaultAccount])
 
   const updateEthers = async () => {
+    console.log("Updating Ethers")
     try {
       const tempProvider = new ethers.providers.Web3Provider(window.ethereum);
       const tempSigner = tempProvider.getSigner();
       //  合約資料
-      const tempUSDTContract = new ethers.Contract(USDTContractAddress, USDTABI, tempSigner)
+      const tempUSDTContract = new ethers.Contract(TEDAddress, USDTABI, tempSigner)
       // setUSDTContract(tempUSDTContract);
 
       const tempUSDTBalance = await tempUSDTContract.balanceOf(defaultAccount);
@@ -57,7 +60,7 @@ function Wallet() {
       <div className="my-wallet mb-8 w-full">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-lg font-bold text-bgray-900 dark:text-white">
-            My Wallet
+            我的錢包
             <span style={{ paddingLeft: '20px' }}>
               {
                 connectingAccount
@@ -78,10 +81,14 @@ function Wallet() {
         <h3 className="mb-4 text-lg font-bold text-bgray-900 dark:text-white">
           TED Swap
         </h3>
-        <PaymentFilter amount={USDTAmount} setPercentage={handlePercentageChosen} />
+        <PaymentFilter
+          amount={USDTAmount}
+          setPercentage={handlePercentageChosen}
+          tokenName={"TED"}
+        />
         <div className="flex h-[98px] w-full flex-col justify-between rounded-lg border border-bgray-200 p-4 focus-within:border-success-300 dark:border-darkblack-400">
           <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
-            Enter TED amount
+            輸入欲販售的TED數量
           </p>
           <div className="flex h-[35px] w-full items-center justify-between">
             <span className="text-2xl font-bold text-bgray-900 dark:text-white">
@@ -96,7 +103,7 @@ function Wallet() {
             </label>
           </div>
         </div>
-        <GreenBtn text="Make Swap" className="mt-7" action={makeSwap}/>
+        <GreenBtn text="Make Swap" className="mt-7" action={makeSwap} />
       </div>
     </div>
   );

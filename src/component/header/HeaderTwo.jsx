@@ -3,12 +3,18 @@ import logo from "../../assets/images/logo/logo-color.svg";
 import logoW from "../../assets/images/logo/logo-white.svg";
 import TEDLogo from "../../assets/images/logo/TED_LOGO.png";
 import profile from "../../assets/images/avatar/profile-52x52.png";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import ResProfilePopup from "./ResProfilePopup";
+import MyContext from "../../DataProvider";
 
-function HeaderTwo({ handleSidebar,isConnectingWallet }) {
+function HeaderTwo({ handleSidebar, isConnectingWallet }) {
   const [activePopup, handleActivePopup] = useState(false);
+  const { defaultAccount } = useContext(MyContext);
+
+  const showWalletText = defaultAccount === undefined || defaultAccount === null
+    ? "连接钱包"
+    : defaultAccount.slice(0, 4) + "..." + defaultAccount.slice(-4);
 
   const handleWalletConnect = () => {
     isConnectingWallet(true);
@@ -62,8 +68,8 @@ function HeaderTwo({ handleSidebar,isConnectingWallet }) {
                   }}
                   className="block dark:hidden" alt="logo" />
                 <span style={{
-                  fontWeight:'bold',
-                  paddingLeft:'10px'
+                  fontWeight: 'bold',
+                  paddingLeft: '10px'
                 }}>
                   TED DApp
                 </span>
@@ -71,16 +77,15 @@ function HeaderTwo({ handleSidebar,isConnectingWallet }) {
 
             </div>
           </div>
-          <div className="mr-2">
+          <div className="mr-6">
             <div
               onClick={() => handleWalletConnect()}
-              className="flex cursor-pointer space-x-0 lg:space-x-3"
+              className="flex cursor-pointer"
             >
-              <div className="h-[52px] w-[52px] overflow-hidden rounded-xl border border-bgray-300">
-                <img className="object-cover" src={profile} alt="avater" />
-              </div>
+              <span>
+              {showWalletText}
+              </span>
             </div>
-
           </div>
         </div>
       </header>

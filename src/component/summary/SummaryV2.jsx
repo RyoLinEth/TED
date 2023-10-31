@@ -131,8 +131,8 @@ function SummaryV2({ width, height }) {
     setPopupContent(content);
   }
   const approveUSDT = async () => {
-    setPopup("授權USDT", `正在授權 ${amountToMint * 10} USDT`);
-    const amountToApprove = ethers.utils.parseUnits(`${amountToMint * 10}`, USDTDecimal);
+    setPopup("授權USDT", `正在授權 ${amountToMint} USDT`);
+    const amountToApprove = ethers.utils.parseUnits(`${amountToMint}`, USDTDecimal);
     console.log("Approving USDT")
     const approveResult = await USDTContract.approve(MinerContractAddress, amountToApprove)
     console.log(approveResult)
@@ -144,7 +144,7 @@ function SummaryV2({ width, height }) {
         tx.wait().then(async (receipt) => {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("成功授權", `${amountToMint * 10} USDT 已成功授權`);
+          setPopup("成功授權", `${amountToMint} USDT 已成功授權`);
           setIsUSDTNotApproved(false);
           const tempUSDTAllowance = await USDTContract.allowance(defaultAccount, MinerContractAddress);
           const realUSDTAllowance = ethers.utils.formatUnits(`${tempUSDTAllowance}`, USDTDecimal);
@@ -157,8 +157,8 @@ function SummaryV2({ width, height }) {
   }
 
   const approveUSD = async () => {
-    setPopup("授權USD", `正在授權 ${amountToMint * 10} USD`);
-    const amountToApprove = ethers.utils.parseUnits(`${amountToMint * 10}`, USDDecimal);
+    setPopup("授權USD", `正在授權 ${amountToMint} USD`);
+    const amountToApprove = ethers.utils.parseUnits(`${amountToMint}`, USDDecimal);
     console.log(amountToApprove);
     console.log("Approving USD")
     const approveResult = await USDContract.approve(MinerContractAddress, amountToApprove)
@@ -171,7 +171,7 @@ function SummaryV2({ width, height }) {
         tx.wait().then(async (receipt) => {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("成功授權", `${amountToMint * 10} USD 已成功授權`);
+          setPopup("成功授權", `${amountToMint} USD 已成功授權`);
           setIsUSDNotApproved(false);
           const tempUSDAllowance = await USDContract.allowance(defaultAccount, MinerContractAddress);
           const realUSDAllowance = ethers.utils.formatUnits(`${tempUSDAllowance}`, USDDecimal);
@@ -195,7 +195,19 @@ function SummaryV2({ width, height }) {
     }
   };
   const mintMiner = async () => {
-    setPopup("合成礦機", `正在合成 ${amountToMint} 台礦機`);
+    if (isUSDNotApproved && isUSDTNotApproved) {
+      alert("USD 和 USDT 授權額度不足");
+      return;
+    } else if (isUSDNotApproved) {
+      alert("USD 授權額度不足");
+      return;
+    } else if (isUSDTNotApproved) {
+      alert("USDT 授權額度不足");
+      return;
+    }
+
+
+    setPopup("添加算力", `正在添加 ${amountToMint} 算力`);
     console.log("Minting Miner ... ");
     const result = await MinerContract.mint(amountToMint)
     console.log(result)
@@ -206,7 +218,7 @@ function SummaryV2({ width, height }) {
         tx.wait().then(async (receipt) => {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("礦機成功合成", `已成功合成 ${amountToMint}台礦機`);
+          setPopup("算力添加成功", `已成功添加 ${amountToMint}算力`);
           const newMiners = MinerContract.personalMinerAmount(defaultAccount);
           const realMinerPower = ethers.utils.formatUnits(`${newMiners}`, 0);
           setMinerAmount(realMinerPower)
@@ -252,9 +264,11 @@ function SummaryV2({ width, height }) {
       </div>
       <div className="flex justify-between items-center mb-8">
         <h3 className="text-base xl:text-xl text-bgray-900 dark:text-white font-bold">
-          礦機價格
+          最低可購算力: 10算力
         </h3>
-        10 USDT + 10 USD/1台
+        <br />
+        <br />
+        10 USDT + 10 USD
       </div>
       <div className="flex space-x-3 mb-10">
         {
@@ -269,7 +283,7 @@ function SummaryV2({ width, height }) {
 
       <div className="flex h-[98px] w-full flex-col justify-between rounded-lg border border-bgray-200 p-4 focus-within:border-success-300 dark:border-darkblack-400">
         <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
-          輸入合成礦機數量
+          輸入合成算力數量
         </p>
         <div className="flex h-[35px] w-full items-center justify-between">
           <span className="text-2xl font-bold text-bgray-900 dark:text-white">
@@ -287,7 +301,7 @@ function SummaryV2({ width, height }) {
       </div>
 
       <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
-        所需 USDT : {amountToMint * 10}
+        所需 USDT : {amountToMint}
         <span style={{ paddingLeft: '10px' }}>
           {
             +USDTAllowance >= +amountToMint * 10
@@ -295,7 +309,7 @@ function SummaryV2({ width, height }) {
           }
         </span>
         <br />
-        所需 USD : {amountToMint * 10}
+        所需 USD : {amountToMint}
         <span style={{ paddingLeft: '10px' }}>
           {
             +USDAllowance >= +amountToMint * 10
