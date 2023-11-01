@@ -56,7 +56,7 @@ function SummaryV2({ width, height }) {
     }
 
     const checkUSDApprovalAgain = async () => {
-      const amountToApprove = amountToMint * 10;
+      const amountToApprove = amountToMint;
       console.log("USDAllowance : " + USDAllowance)
       if (+USDAllowance >= +amountToApprove) {
         console.log("No Need To Approve USD More");
@@ -67,7 +67,7 @@ function SummaryV2({ width, height }) {
     }
 
     const checkUSDTApprovalAgain = async () => {
-      const amountToApprove = amountToMint * 10;
+      const amountToApprove = amountToMint;
       console.log("USDTAllowance : " + USDTAllowance)
       if (+USDTAllowance >= +amountToApprove) {
         console.log("No Need To Approve USDT More");
@@ -117,7 +117,7 @@ function SummaryV2({ width, height }) {
       setMinerContract(tempMinerContract);
       const tempMinerAmount = await tempMinerContract.personalMinerAmount(defaultAccount)
       const realMinerPower = ethers.utils.formatUnits(`${tempMinerAmount}`, 0);
-      setMinerAmount(realMinerPower)
+      setMinerAmount(realMinerPower * 2)
 
       if (+result === 0) setIsUSDTNotApproved(true);
       if (+result2 === 0) setIsUSDNotApproved(true);
@@ -186,16 +186,20 @@ function SummaryV2({ width, height }) {
 
   const handleInputChange = (event) => {
     const value = event.target.value;
-
+    
     // Check if the input is a valid integer
     if (/^(0|[1-9]\d*)$/.test(value)) {
-      setAmountToMint(parseInt(value, 10)); // Parse the input as an integer
+      setAmountToMint(parseInt(value/2, 10)); // Parse the input as an integer
     } else {
       // Handle invalid input, e.g., display an error message
       // You can also choose to ignore or clear the input
     }
   };
   const mintMiner = async () => {
+    if (+amountToMint < 10) {
+      swal("未達標","算力未達最低標準","error")
+      return;
+    }
     if (isUSDNotApproved && isUSDTNotApproved) {
       swal("額度不足","USD 和 USDT 授權額度不足","error");
       return;
@@ -224,11 +228,7 @@ function SummaryV2({ width, height }) {
         })
       })
   }
-
-  const openPopup = () => {
-    setShowPopup(true);
-  };
-
+  
   const closePopup = () => {
     setShowPopup(false);
   };
@@ -263,7 +263,7 @@ function SummaryV2({ width, height }) {
       </div>
       <div className="flex justify-between items-center mb-8">
         <h3 className="text-base xl:text-xl text-bgray-900 dark:text-white font-bold">
-          最低可購算力: 10算力
+          最低可購算力: 20算力
         </h3>
         <br />
         <br />
@@ -292,7 +292,7 @@ function SummaryV2({ width, height }) {
             <input
               type="number"
               className="w-full border-none p-0 text-2xl font-bold text-bgray-900 focus:outline-none focus:ring-0 dark:border-darkblack-400 dark:bg-darkblack-600 dark:text-white"
-              defaultValue={amountToMint}
+              defaultValue={amountToMint * 2}
               onChange={handleInputChange}
             />
           </label>

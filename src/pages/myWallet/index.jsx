@@ -51,7 +51,7 @@ function MyWallet() {
       ? realPowerPerHour
       : Number(realPowerPerHour).toFixed(4);
 
-      setTEDPerHour(powerResult)
+      setTEDPerHour(powerResult*2)
 
       const tempClaimableValue = await tempMinerContract.claimableTEDAmount(defaultAccount);
       const realClaimableValue = ethers.utils.formatUnits(`${tempClaimableValue}`,tempTEDDecimal);
