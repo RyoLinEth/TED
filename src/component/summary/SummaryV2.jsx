@@ -11,12 +11,13 @@ import Popup from "../Popup/Popup";
 import swal from "sweetalert";
 
 //  礦機合約
-function SummaryV2({ width, height }) {
+function SummaryV2({ width, height, inviter }) {
   const {
     defaultAccount,
     USDTContractAddress,
     USDContractAddress,
-    MinerContractAddress
+    MinerContractAddress,
+    defaultInviter
   } = useContext(MyContext);
 
   const [showPopup, setShowPopup] = useState(false);
@@ -228,7 +229,7 @@ function SummaryV2({ width, height }) {
         })
       })
   }
-  
+
   const closePopup = () => {
     setShowPopup(false);
   };

@@ -12,6 +12,7 @@ export const DataProvider = ({ children }) => {
     const TEDAddress="0x7c9127F628Db9704FcdB097F162a1da2b46626BA"
     const USDSwap="0xa8f64CAB494A992563eE4D7a733d929876895ba3"
     const TEDUSDTLP = "0x8A2056ad4fdfb4E02aCfB7BB74FCAbbE571048ED"
+    const defaultInviter = "0xA263695d7487F16cb93655E90c9c7397d62cC30e"
 
     return (
         <MyContext.Provider value={{
@@ -20,7 +21,8 @@ export const DataProvider = ({ children }) => {
             USDContractAddress,
             MinerContractAddress,
             TEDAddress,
-            USDSwap
+            USDSwap,
+            defaultInviter
         }}>
             {children}
         </MyContext.Provider>
