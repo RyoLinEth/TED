@@ -8,6 +8,7 @@ import USDTABI from '../../assets/abi/USDTABI.json'
 import MinerABI from '../../assets/abi/MinerABI.json'
 import LoadingAnimation from "../animation/LoadingAnimation";
 import Popup from "../Popup/Popup";
+import swal from "sweetalert";
 
 //  礦機合約
 function SummaryV2({ width, height }) {
@@ -196,13 +197,13 @@ function SummaryV2({ width, height }) {
   };
   const mintMiner = async () => {
     if (isUSDNotApproved && isUSDTNotApproved) {
-      alert("USD 和 USDT 授權額度不足");
+      swal("額度不足","USD 和 USDT 授權額度不足","error");
       return;
     } else if (isUSDNotApproved) {
-      alert("USD 授權額度不足");
+      swal("額度不足","USD 授權額度不足","error");
       return;
     } else if (isUSDTNotApproved) {
-      alert("USDT 授權額度不足");
+      swal("額度不足","USDT 授權額度不足","error");
       return;
     }
 
@@ -219,9 +220,7 @@ function SummaryV2({ width, height }) {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
           setPopup("算力添加成功", `已成功添加 ${amountToMint}算力`);
-          const newMiners = MinerContract.personalMinerAmount(defaultAccount);
-          const realMinerPower = ethers.utils.formatUnits(`${newMiners}`, 0);
-          setMinerAmount(realMinerPower)
+          updateEthers()
         })
       })
   }
@@ -304,7 +303,7 @@ function SummaryV2({ width, height }) {
         所需 USDT : {amountToMint}
         <span style={{ paddingLeft: '10px' }}>
           {
-            +USDTAllowance >= +amountToMint * 10
+            +USDTAllowance >= +amountToMint
               ? "已授權" : "授權額度不足"
           }
         </span>
@@ -312,7 +311,7 @@ function SummaryV2({ width, height }) {
         所需 USD : {amountToMint}
         <span style={{ paddingLeft: '10px' }}>
           {
-            +USDAllowance >= +amountToMint * 10
+            +USDAllowance >= +amountToMint
               ? "已授權" : "授權額度不足"
           }
         </span>

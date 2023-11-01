@@ -48,7 +48,7 @@ function Wallet() {
 
   const makeSwap = () => {
     console.log("Making Swap ...")
-    alert("Swap 功能尚未開放")
+    swal("功能完善中","TED兌換功能尚未開放","error")
   }
   const handlePercentageChosen = (value) => {
     const numberToSell = (USDTAmount * value / 100).toFixed(4)

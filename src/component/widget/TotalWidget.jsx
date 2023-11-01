@@ -25,7 +25,7 @@ function TotalWidget() {
         <TotalWidgetCard
           totalEarnImg={totalEarn}
           memberImg={memberImg}
-          title="$TED Price"
+          title="$TED 實時價格"
           amount={tedPrice}
           groth="+ 3.5%"
           id="totalEarn"
@@ -33,7 +33,7 @@ function TotalWidget() {
         <TotalWidgetCard
           totalEarnImg={totalEarn}
           memberImg={memberImg}
-          title="TED Holding"
+          title="TED 持有量"
           amount={tedAmount}
           groth="+ 3.5%"
           id="totalSpending"

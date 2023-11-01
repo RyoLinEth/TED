@@ -1,6 +1,6 @@
 import TransparentBtn from "../button/TransparentBtn";
 
-function AddBalance({ title, content, currency, showSvgContent, showButton }) {
+function AddBalance({ title, content, currency, showSvgContent, showButton, action }) {
   const SvgContent = () => {
     console.log("HI")
     return (
@@ -33,7 +33,7 @@ function AddBalance({ title, content, currency, showSvgContent, showButton }) {
           {title}
         </h3>
         <h2 className="text-4xl font-bold font-poppins text-bgray-900 dark:text-white mb-2">
-          $ {content}
+          ${content}
           <span className="text-base font-medium uppercase text-bgray-500"
             style={{ marginLeft: '20px' }}>
             {currency}
@@ -43,7 +43,7 @@ function AddBalance({ title, content, currency, showSvgContent, showButton }) {
       </div>
       {
         showButton &&
-        <div className="flex justify-center -mt-6">
+        <div className="flex justify-center -mt-6" onClick={action}>
           <TransparentBtn title="Withdraw All Earning" />
         </div>
       }

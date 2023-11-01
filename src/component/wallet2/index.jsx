@@ -7,6 +7,7 @@ import USDTABI from '../../assets/abi/USDTABI.json'
 import USDSwapABI from '../../assets/abi/USDSwapABI.json'
 import { ethers } from 'ethers'
 import Popup from "../Popup/Popup";
+import swal from "sweetalert";
 
 function Wallet() {
   const { defaultAccount, USDTContractAddress, USDSwap } = useContext(MyContext);
@@ -104,7 +105,10 @@ function Wallet() {
 
 
   const makeSwap = async () => {
-    console.log("Making Swap ...")
+    if(isUSDTNotApproved) {
+      swal("額度不足","USDT授權額度不足","error");
+      return;
+    }
     const amountToApproveAndSell = ethers.utils.parseUnits(`${amountToSell}`, USDTDecimal);
     const swapResult = await USDSwapContract.swapUSD(amountToApproveAndSell)
 
@@ -116,13 +120,7 @@ function Wallet() {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
           setPopup("成功兌換", `${amountToSell} USDT 已成功兌換`);
-          // setIsUSDTNotApproved(false);
-          // const tempUSDTAllowance = await USDTContract.allowance(defaultAccount, MinerContractAddress);
-          // const realUSDTAllowance = ethers.utils.formatUnits(`${tempUSDTAllowance}`, USDTDecimal);
-          // const result = Number.isInteger(realUSDTAllowance)
-          //   ? realUSDTAllowance
-          //   : Number(realUSDTAllowance).toFixed(4);
-          // setUSDTAllowance(result)
+          updateEthers()
         })
       })
   }
@@ -206,11 +204,24 @@ function Wallet() {
 
         <div className="flex space-x-3 mb-10">
           {
-            (isUSDTNotApproved && amountToSell !== 0) &&
-            < GreenBtn text="授權USDT" className="mt-7" action={approveUSDT} />
+
+            (isUSDTNotApproved && amountToSell !== null && amountToSell !== 0) &&
+            <GreenBtn text="授權USDT" className="mt-7" action={approveUSDT} />
           }
           <GreenBtn text="Make Swap" className="mt-7" action={makeSwap} />
         </div>
+        {
+          amountToSell !== 0 && amountToSell !== null &&
+          <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
+            所需 USDT : {amountToSell}
+            <span style={{ paddingLeft: '10px' }}>
+              {
+                +USDTAllowance >= +amountToSell
+                  ? "已授權" : "授權額度不足"
+              }
+            </span>
+          </p>
+        }
       </div>
     </div>
   );
