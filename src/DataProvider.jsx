@@ -10,7 +10,7 @@ export const DataProvider = ({ children }) => {
     const MinerContractAddress = "0xDCFeA9B80081aCBfF692784FcC08433Fd96D88C0"
 
     const TEDAddress="0x7c9127F628Db9704FcdB097F162a1da2b46626BA"
-    const USDSwap="0xa8f64CAB494A992563eE4D7a733d929876895ba3"
+    const USDSwap="0xDe403151C18C5A945A8eb028035abb7ced0D93A3"
     const TEDUSDTLP = "0x5bdec4D561D145a0C703A6871a03f73E04e4c1a3"
     const defaultInviter = "0xA263695d7487F16cb93655E90c9c7397d62cC30e"
     // const USDTContractAddress = "0x7f180D50f382Ae5549b6d144f0Bdc7a87111EF72"
