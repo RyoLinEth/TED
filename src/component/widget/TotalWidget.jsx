@@ -7,11 +7,12 @@ import PoolABI from '../../assets/abi/PoolABI.json'
 import { ethers } from "ethers";
 
 function TotalWidget() {
-  const TEDUSDLP ="0x5bdec4D561D145a0C703A6871a03f73E04e4c1a3";
+  const TEDUSDLP = "0x5bdec4D561D145a0C703A6871a03f73E04e4c1a3";
   const { defaultAccount } = useContext(MyContext)
   const connectWalletText = "請連接錢包"
   const [tedPrice, setTedPrice] = useState(connectWalletText);
   const [tedAmount, setTedAmount] = useState(connectWalletText);
+  const [poolContract,setPoolContract] = useState(null);
 
   useEffect(() => {
     if (defaultAccount === null || defaultAccount === undefined) return;
@@ -19,14 +20,31 @@ function TotalWidget() {
     updateEthers()
   }, [defaultAccount, TEDUSDLP])
 
+  useEffect(() => {
+    // 初始加载数据
+    updateEthers();
+
+    // 设置定时器，每20秒获取一次数据
+    const intervalId = setInterval(() => {
+      updateEthers();
+    }, 20000);
+
+    // 组件卸载时清除定时器
+    return () => clearInterval(intervalId);
+  }, []);
+
+
 
   const updateEthers = async () => {
+    if (defaultAccount === null || defaultAccount === undefined) return;
     try {
       const tempProvider = new ethers.providers.Web3Provider(window.ethereum);
       const tempSigner = tempProvider.getSigner();
 
       //  合約資料
       const tempPoolContract = new ethers.Contract(TEDUSDLP, PoolABI, tempSigner)
+      setPoolContract(tempPoolContract);
+
       const price = await tempPoolContract.TEDPrice();
       const realPrice = ethers.utils.formatUnits(`${price}`, 18);
       const fixedDecimal = Number(realPrice).toFixed(5)
