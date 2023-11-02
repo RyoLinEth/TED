@@ -55,7 +55,7 @@ function AddBalance({ title, content, currency, showSvgContent, showButton, acti
       {
         showButton &&
         <div className="flex justify-center -mt-6" onClick={action}>
-          <TransparentBtn title="Withdraw All Earning" />
+          <TransparentBtn title="領取TED" />
         </div>
       }
       {showMark &&

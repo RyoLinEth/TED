@@ -8,7 +8,6 @@ import USDTABI from "../../assets/abi/USDTABI.json"
 function MyWallet() {
   const { defaultAccount, MinerContractAddress, TEDAddress } = useContext(MyContext);
 
-  const [withdrawableAmount, setWithdrawableAmount] = useState(1);
   const [claimedAmount, setClaimedAmount] = useState(0);
   const [TEDAmount, setTEDAmount] = useState(0);
   const [TEDDecimals, setTEDDecimals] = useState(0);
@@ -51,7 +50,7 @@ function MyWallet() {
       ? realPowerPerHour
       : Number(realPowerPerHour).toFixed(4);
 
-      setTEDPerHour(powerResult*2)
+      setTEDPerHour(powerResult)
 
       const tempClaimableValue = await tempMinerContract.claimableTEDAmount(defaultAccount);
       const realClaimableValue = ethers.utils.formatUnits(`${tempClaimableValue}`,tempTEDDecimal);
@@ -60,7 +59,6 @@ function MyWallet() {
       : Number(realClaimableValue).toFixed(4);
 
       setClaimableValue(valueResult)
-
     } catch (err) {
       console.log(err)
     }

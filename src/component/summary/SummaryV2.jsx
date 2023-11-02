@@ -42,10 +42,26 @@ function SummaryV2({ width, height, inviter }) {
   const [MinerContract, setMinerContract] = useState(null);
   const [MinerAmount, setMinerAmount] = useState(0);
 
+  const [realInviter, setRealInviter] = useState(null)
+
+  useEffect(() => {
+    if (realInviter !== null) return;
+    if (inviter === null) setRealInviter(defaultInviter)
+    else setRealInviter(inviter)
+  }, [inviter])
+
   useEffect(() => {
     if (defaultAccount === null || defaultAccount === undefined) return;
     if (USDTContractAddress === null || USDContractAddress === null || MinerContractAddress === null) return;
     updateEthers()
+
+    if (
+      inviter === defaultAccount
+      || defaultInviter === null
+      || defaultInviter === undefined
+    ) setRealInviter(defaultInviter)
+
+    else setRealInviter(inviter);
   }, [defaultAccount])
 
   useEffect(() => {
@@ -187,10 +203,10 @@ function SummaryV2({ width, height, inviter }) {
 
   const handleInputChange = (event) => {
     const value = event.target.value;
-    
+
     // Check if the input is a valid integer
     if (/^(0|[1-9]\d*)$/.test(value)) {
-      setAmountToMint(parseInt(value/2, 10)); // Parse the input as an integer
+      setAmountToMint(parseInt(value / 2, 10)); // Parse the input as an integer
     } else {
       // Handle invalid input, e.g., display an error message
       // You can also choose to ignore or clear the input
@@ -198,24 +214,27 @@ function SummaryV2({ width, height, inviter }) {
   };
   const mintMiner = async () => {
     if (+amountToMint < 10) {
-      swal("未達標","算力未達最低標準","error")
+      swal("未達標", "算力未達最低標準", "error")
       return;
     }
-    if (isUSDNotApproved && isUSDTNotApproved) {
-      swal("額度不足","USD 和 USDT 授權額度不足","error");
+    if (+USDTAllowance < +amountToMint && +USDAllowance < +amountToMint) {
+      swal("額度不足", "USD 和 USDT 授權額度不足", "error");
       return;
-    } else if (isUSDNotApproved) {
-      swal("額度不足","USD 授權額度不足","error");
+    } else if (+USDAllowance < +amountToMint) {
+      swal("額度不足", "USD 授權額度不足", "error");
       return;
-    } else if (isUSDTNotApproved) {
-      swal("額度不足","USDT 授權額度不足","error");
+    } else if (+USDTAllowance < +amountToMint) {
+      swal("額度不足", "USDT 授權額度不足", "error");
       return;
     }
 
 
-    setPopup("添加算力", `正在添加 ${amountToMint} 算力`);
+    setPopup("添加算力", `正在添加 ${amountToMint * 2} 算力`);
+
+    const minerInviter = inviter === null ? defaultAccount : inviter;
     console.log("Minting Miner ... ");
-    const result = await MinerContract.mint(amountToMint)
+    console.log(amountToMint, minerInviter)
+    const result = await MinerContract.mint(amountToMint, minerInviter)
     console.log(result)
     provider
       .getTransaction(result.hash)
@@ -224,7 +243,7 @@ function SummaryV2({ width, height, inviter }) {
         tx.wait().then(async (receipt) => {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("算力添加成功", `已成功添加 ${amountToMint}算力`);
+          setPopup("算力添加成功", `已成功添加 ${amountToMint*2}算力`);
           updateEthers()
         })
       })

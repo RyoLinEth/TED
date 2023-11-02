@@ -3,7 +3,7 @@ import AddBalance from "../../component/addBalance/AddBalance";
 import MyContext from "../../DataProvider";
 
 function Users() {
-  const defaultLink = "https://dapp.tedusd.online/?inviter=";
+  const defaultLink = "https://dapp.tedusd.online/miner?inviter=";
   const { defaultAccount } = useContext(MyContext);
 
   const [personalLink, setPersonalLink] = useState(null);

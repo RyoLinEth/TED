@@ -9,8 +9,8 @@ import { ethers } from 'ethers'
 function Wallet() {
   const { defaultAccount, TEDAddress } = useContext(MyContext);
 
-  // const [USDTContract, setUSDTContract] = useState(null);
-  const [USDTAmount, setUSDTAmount] = useState(null)
+  // const [TEDContract, setTEDContract] = useState(null);
+  const [TEDAmount, setTEDAmount] = useState(null)
 
   const [connectingAccount, setConnectingAccount] = useState(null);
 
@@ -31,16 +31,16 @@ function Wallet() {
       const tempProvider = new ethers.providers.Web3Provider(window.ethereum);
       const tempSigner = tempProvider.getSigner();
       //  合約資料
-      const tempUSDTContract = new ethers.Contract(TEDAddress, USDTABI, tempSigner)
-      // setUSDTContract(tempUSDTContract);
+      const tempTEDContract = new ethers.Contract(TEDAddress, USDTABI, tempSigner)
+      // setTEDContract(tempTEDContract);
 
-      const tempUSDTBalance = await tempUSDTContract.balanceOf(defaultAccount);
-      const tempUSDTDecimal = await tempUSDTContract.decimals();
+      const tempTEDBalance = await tempTEDContract.balanceOf(defaultAccount);
+      const tempTEDDecimal = await tempTEDContract.decimals();
 
-      const realAmount = ethers.utils.formatUnits(`${tempUSDTBalance}`, tempUSDTDecimal);
+      const realAmount = ethers.utils.formatUnits(`${tempTEDBalance}`, tempTEDDecimal);
       const result = Number.isInteger(realAmount) ? realAmount : Number(realAmount).toFixed(4);
 
-      setUSDTAmount(result)
+      setTEDAmount(result)
     } catch (err) {
       console.log(err)
     }
@@ -48,10 +48,10 @@ function Wallet() {
 
   const makeSwap = () => {
     console.log("Making Swap ...")
-    swal("功能完善中","TED Swap功能 11/2 - 11/3 開放","error")
+    swal("11/3 開放","TED Swap功能 11/3 開放","error")
   }
   const handlePercentageChosen = (value) => {
-    const numberToSell = (USDTAmount * value / 100).toFixed(4)
+    const numberToSell = (TEDAmount * value / 100).toFixed(4)
     setAmountToSell(numberToSell)
   }
 
@@ -82,7 +82,7 @@ function Wallet() {
           TED Swap
         </h3>
         <PaymentFilter
-          amount={USDTAmount}
+          amount={TEDAmount}
           setPercentage={handlePercentageChosen}
           tokenName={"TED"}
         />
