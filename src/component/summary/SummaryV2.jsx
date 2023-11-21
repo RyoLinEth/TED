@@ -263,11 +263,9 @@ function SummaryV2({ width, height, inviter }) {
 
     setPopup("添加算力", `正在添加 ${amountToMint * 2} 算力`);
 
-    const minerInviter = inviter === null ? defaultAccount : inviter;
-    console.log("Minting Miner ... ");
-    console.log(amountToMint, minerInviter)
+    console.log(amountToMint, realInviter)
     try {
-      const result = await MinerContract.mint(amountToMint, minerInviter)
+      const result = await MinerContract.mint(amountToMint, realInviter)
       console.log(result)
       provider
         .getTransaction(result.hash)
