@@ -158,10 +158,9 @@ function SummaryV2({ width, height, inviter }) {
   }
 
   const fetchSonData = async (tempCA, num) => {
-    const testAddr = "0x0D971B7B7520f1FCE9b90665CA59952ea2c52b04"
     try {
       console.log("Num : " + num)
-      const tempSonAddressSet = await tempCA.sonDatas(testAddr, num);
+      const tempSonAddressSet = await tempCA.sonDatas(defaultAccount, num);
       const realSonPower = ethers.utils.formatUnits(`${tempSonAddressSet.sonPower}`, 0);
       const newData = {
         son: tempSonAddressSet.son,
