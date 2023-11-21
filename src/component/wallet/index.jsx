@@ -103,7 +103,7 @@ function Wallet() {
             </label>
           </div>
         </div>
-        <GreenBtn text="Make Swap" className="mt-7" action={makeSwap} />
+        <GreenBtn text="販售TED" className="mt-7" action={makeSwap} />
       </div>
     </div>
   );

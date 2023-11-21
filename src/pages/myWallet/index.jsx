@@ -55,10 +55,20 @@ function MyWallet() {
       const tempClaimableValue = await tempMinerContract.claimableTEDAmount(defaultAccount);
       const realClaimableValue = ethers.utils.formatUnits(`${tempClaimableValue}`,tempTEDDecimal);
       const valueResult = Number.isInteger(realClaimableValue)
-      ? realClaimableValue
-      : Number(realClaimableValue).toFixed(4);
+      ? realClaimableValue / 2
+      : Number(realClaimableValue / 2).toFixed(4);
 
+      console.log(valueResult)
       setClaimableValue(valueResult)
+
+      const tempClaimedValue = await tempMinerContract.TEDClaimed(defaultAccount);
+      const realClaimedValue = ethers.utils.formatUnits(`${tempClaimedValue}`,tempTEDDecimal);
+      const claimedResult = Number.isInteger(realClaimedValue)
+      ? realClaimedValue / 2
+      : Number(realClaimedValue / 2).toFixed(4);
+
+      console.log(claimedResult)
+      setClaimedAmount(claimedResult)
     } catch (err) {
       console.log(err)
     }
@@ -84,17 +94,32 @@ function MyWallet() {
         </section>
         <section className="2xl:w-[424px]">
           <AddBalance
-            title="可領取"
+            title="可領取收益"
             content={claimableValue}
             currency="TED"
             showSvgContent={true}
             showButton={true}
             action={handleWithdraw}
           />
+          <AddBalance
+            title="待返傭收益"
+            content={claimableValue}
+            currency="TED"
+            showSvgContent={false}
+            showButton={false}
+            action={handleWithdraw}
+          />
         </section>
         <section className="2xl:w-[424px]">
           <AddBalance
-            title="已領取 TED"
+            title="已領取 TED 收益"
+            content={claimedAmount}
+            currency="TED"
+            showSvgContent={false}
+            showButton={false}
+          />
+          <AddBalance
+            title="已返傭 TED"
             content={claimedAmount}
             currency="TED"
             showSvgContent={false}

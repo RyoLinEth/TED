@@ -208,7 +208,7 @@ function Wallet() {
             (isUSDTNotApproved && amountToSell !== null && amountToSell !== 0) &&
             <GreenBtn text="授權USDT" className="mt-7" action={approveUSDT} />
           }
-          <GreenBtn text="Make Swap" className="mt-7" action={makeSwap} />
+          <GreenBtn text="買入USD" className="mt-7" action={makeSwap} />
         </div>
         {
           amountToSell !== 0 && amountToSell !== null &&

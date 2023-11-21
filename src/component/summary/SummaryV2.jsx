@@ -42,27 +42,41 @@ function SummaryV2({ width, height, inviter }) {
   const [MinerContract, setMinerContract] = useState(null);
   const [MinerAmount, setMinerAmount] = useState(0);
 
-  const [realInviter, setRealInviter] = useState(null)
+  const [realInviter, setRealInviter] = useState(defaultInviter)
+
+
+  const [sonDatas, setSonDatas] = useState([]);
+
+
 
   useEffect(() => {
-    if (realInviter !== null) return;
-    if (inviter === null) setRealInviter(defaultInviter)
-    else setRealInviter(inviter)
+    if (inviter === null) return;
+    if (realInviter !== defaultInviter) return;
+    setRealInviter(inviter)
+
+    const setInviter = () => {
+      if (
+        inviter === defaultAccount
+        || defaultInviter === null
+        || defaultInviter === undefined
+      ) setRealInviter(defaultInviter)
+
+      else setRealInviter(inviter);
+    }
+    setInviter()
   }, [inviter])
 
   useEffect(() => {
     if (defaultAccount === null || defaultAccount === undefined) return;
     if (USDTContractAddress === null || USDContractAddress === null || MinerContractAddress === null) return;
     updateEthers()
-
-    if (
-      inviter === defaultAccount
-      || defaultInviter === null
-      || defaultInviter === undefined
-    ) setRealInviter(defaultInviter)
-
-    else setRealInviter(inviter);
   }, [defaultAccount])
+
+  useEffect(() => {
+    if (MinerContract === null) return;
+    if (sonDatas.length !== 0) return;
+    fetchSonData(MinerContract, 0);
+  }, [MinerContract])
 
   useEffect(() => {
     if (amountToMint === 0) return;
@@ -140,6 +154,25 @@ function SummaryV2({ width, height, inviter }) {
       if (+result2 === 0) setIsUSDNotApproved(true);
     } catch (err) {
       console.log(err)
+    }
+  }
+
+  const fetchSonData = async (tempCA, num) => {
+    const testAddr = "0x0D971B7B7520f1FCE9b90665CA59952ea2c52b04"
+    try {
+      console.log("Num : " + num)
+      const tempSonAddressSet = await tempCA.sonDatas(testAddr, num);
+      const realSonPower = ethers.utils.formatUnits(`${tempSonAddressSet.sonPower}`, 0);
+      const newData = {
+        son: tempSonAddressSet.son,
+        link: `https://bscscan.com/address/${tempSonAddressSet.son}`,
+        power: realSonPower * 2
+      }
+      setSonDatas(prevSonDatas => [...prevSonDatas, newData]);
+      const updatedNum = num + 1;
+      await fetchSonData(tempCA, updatedNum)
+    } catch (err) {
+      console.log("No More Datas with : " + num)
     }
   }
 
@@ -243,7 +276,7 @@ function SummaryV2({ width, height, inviter }) {
         tx.wait().then(async (receipt) => {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("算力添加成功", `已成功添加 ${amountToMint*2}算力`);
+          setPopup("算力添加成功", `已成功添加 ${amountToMint * 2}算力`);
           updateEthers()
         })
       })
@@ -252,7 +285,7 @@ function SummaryV2({ width, height, inviter }) {
   const closePopup = () => {
     setShowPopup(false);
   };
-
+  console.log(sonDatas)
   return (
     <div className="w-full rounded-lg px-5 py-6 bg-white dark:bg-darkblack-600 h-full">
       {showPopup && (
@@ -276,10 +309,34 @@ function SummaryV2({ width, height, inviter }) {
           </div>
         </div>
       </div>
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-base xl:text-2xl text-bgray-900 dark:text-white font-bold">
-          礦機合成
-        </h2>
+      <div className="flex justify-between items-center pb-2 mb-2 border-b border-bgray-300">
+        <h3 className="text-bgray-900 dark:text-white sm:text-2xl text-xl font-bold">
+          團隊礦機
+        </h3>
+        <div className="mb-4 flex items-center space-x-8">
+          <div
+            className={`relative ${width ? width : "w-[180px]"} ${height && height
+              }`}
+          >
+          </div>
+          <ul>
+            {
+              sonDatas !== undefined && sonDatas !== null && sonDatas.length !== 0 &&
+              sonDatas.map((data, index) => {
+                return (
+                  <li key={data.son}>
+                    <p>{index + 1}.</p>
+                    <p>子級別地址:
+                      <a href={data.link}>
+                        {data.son.slice(0, 4)}...{data.son.slice(-4)}
+                      </a>
+                    </p>
+                    <p>子級別算力: {data.power}</p>
+                  </li>
+                )
+              })}
+          </ul>
+        </div>
       </div>
       <div className="flex justify-between items-center mb-8">
         <h3 className="text-base xl:text-xl text-bgray-900 dark:text-white font-bold">
@@ -289,6 +346,9 @@ function SummaryV2({ width, height, inviter }) {
         <br />
         10 USDT + 10 USD
       </div>
+      <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
+        當前邀請者 : {realInviter}
+      </p>
       <div className="flex space-x-3 mb-10">
         {
           (isUSDTNotApproved && amountToMint !== 0) &&
