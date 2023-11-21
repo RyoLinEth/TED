@@ -266,19 +266,23 @@ function SummaryV2({ width, height, inviter }) {
     const minerInviter = inviter === null ? defaultAccount : inviter;
     console.log("Minting Miner ... ");
     console.log(amountToMint, minerInviter)
-    const result = await MinerContract.mint(amountToMint, minerInviter)
-    console.log(result)
-    provider
-      .getTransaction(result.hash)
-      .then((tx) => {
-        // 監聽交易上鍊事件
-        tx.wait().then(async (receipt) => {
-          //  授權成功
-          console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("算力添加成功", `已成功添加 ${amountToMint * 2}算力`);
-          updateEthers()
+    try {
+      const result = await MinerContract.mint(amountToMint, minerInviter)
+      console.log(result)
+      provider
+        .getTransaction(result.hash)
+        .then((tx) => {
+          // 監聽交易上鍊事件
+          tx.wait().then(async (receipt) => {
+            //  授權成功
+            console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
+            setPopup("算力添加成功", `已成功添加 ${amountToMint * 2}算力`);
+            updateEthers()
+          })
         })
-      })
+    } catch (err) {
+      swal("錯誤", err, "error")
+    }
   }
 
   const closePopup = () => {
@@ -311,6 +315,8 @@ function SummaryV2({ width, height, inviter }) {
       <div className="flex justify-between items-center pb-2 mb-2 border-b border-bgray-300">
         <h3 className="text-bgray-900 dark:text-white sm:text-2xl text-xl font-bold">
           團隊礦機
+
+          我的團隊級別
         </h3>
         <div className="mb-4 flex items-center space-x-8">
           <div
