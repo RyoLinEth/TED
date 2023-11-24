@@ -76,6 +76,12 @@ function Layout({ bg, overlay, children }) {
       : ""
   );
 
+  const handleSidebarActive = () => {
+    console.log("Handling Sidebar")
+    console.log(sidebar)
+    if (!sidebar) setSidebar(!sidebar);
+  }
+
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
       <div
@@ -86,9 +92,9 @@ function Layout({ bg, overlay, children }) {
         }}
       >
         <div className="relative flex w-full">
-          <Sidebar handleActive={() => setSidebar(!sidebar)} />
+          <Sidebar handleActive={() => handleSidebarActive()} />
           {overlay ? overlay : <Overlay />}
-          <SidebarV2 />
+          <SidebarV2/>
           <div
             className={`body-wrapper flex-1 overflow-x-hidden ${bg ? bg : "dark:bg-darkblack-500"
               } `}

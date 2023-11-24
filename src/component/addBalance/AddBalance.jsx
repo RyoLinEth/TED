@@ -44,7 +44,7 @@ function AddBalance({ title, content, currency, showSvgContent, showButton, acti
         <h2 className="text-xl font-bold font-poppins text-bgray-900 dark:text-white mb-2" style={{
           wordBreak: 'break-all'
         }}>
-          {!showMark && "$"}{content}
+          {currency == "USDT" && "$"}{content}
           <span className="text-base font-medium uppercase text-bgray-500"
             style={{ marginLeft: '20px' }}>
             {currency}

@@ -133,7 +133,7 @@ function Sidebar({ handleActive }) {
       </div>
     )
   }
-  
+
   const SwapIcon2 = () => {
     return (
 
@@ -341,7 +341,10 @@ function Sidebar({ handleActive }) {
                 className={`item py-[11px] text-bgray-900 dark:text-white ${location === "/" ? "nav-active" : ""
                   } `}
               >
-                <Link to="/">
+                <Link
+                  to="/"
+                  onClick={handleActive}
+                >
                   <HomeIcon />
                 </Link>
               </li>
@@ -349,7 +352,10 @@ function Sidebar({ handleActive }) {
                 className={`item py-[11px] text-bgray-900 dark:text-white ${location === "/swap" ? "nav-active" : ""
                   } `}
               >
-                <Link to="/swap">
+                <Link
+                  to="/swap"
+                  onClick={handleActive}
+                >
                   <SwapIcon />
                 </Link>
               </li>
@@ -357,7 +363,10 @@ function Sidebar({ handleActive }) {
                 className={`item py-[11px] text-bgray-900 dark:text-white ${location === "/usdswap" ? "nav-active" : ""
                   } `}
               >
-                <Link to="/usdswap">
+                <Link
+                  to="/usdswap"
+                  onClick={handleActive}
+                >
                   <SwapIcon2 />
                 </Link>
               </li>
@@ -365,7 +374,10 @@ function Sidebar({ handleActive }) {
                 className={`item py-[11px] text-bgray-900 dark:text-white ${location === "/miner" ? "nav-active" : ""
                   } `}
               >
-                <Link to="/miner">
+                <Link
+                  to="/miner"
+                  onClick={handleActive}
+                >
                   <MinerIcon />
                 </Link>
               </li>
@@ -373,7 +385,10 @@ function Sidebar({ handleActive }) {
                 className={`item py-[11px] text-bgray-900 dark:text-white ${location === "/my-wallet" ? "nav-active" : ""
                   } `}
               >
-                <Link to="/my-wallet">
+                <Link
+                  to="/my-wallet"
+                  onClick={handleActive}
+                >
                   <ProfitIcon />
                 </Link>
               </li>
@@ -381,7 +396,10 @@ function Sidebar({ handleActive }) {
                 className={`item py-[11px] text-bgray-900 dark:text-white ${location === "/users" ? "nav-active" : ""
                   } `}
               >
-                <Link to="/users">
+                <Link
+                  to="/users"
+                  onClick={handleActive}
+                >
                   <LinksIcon />
                 </Link>
               </li>

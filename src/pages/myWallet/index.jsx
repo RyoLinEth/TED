@@ -4,9 +4,15 @@ import AddBalance from "../../component/addBalance/AddBalance";
 import MyContext from "../../DataProvider";
 import MinerABI from "../../assets/abi/MinerABI.json"
 import USDTABI from "../../assets/abi/USDTABI.json"
+import Popup from "../../component/Popup/Popup";
 
 function MyWallet() {
   const { defaultAccount, MinerContractAddress, TEDAddress } = useContext(MyContext);
+
+  
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupTitle, setPopupTitle] = useState(null);
+  const [popupContent, setPopupContent] = useState(null);
 
   const [claimedAmount, setClaimedAmount] = useState(0);
   const [TEDAmount, setTEDAmount] = useState(0);
@@ -14,6 +20,7 @@ function MyWallet() {
   const [TEDPerHour, setTEDPerHour] = useState(0);
   const [claimableValue, setClaimableValue] = useState(0);
   const [MinerContract, setMinerContract] = useState(null);
+  const [provider, setProvider] = useState(0);
 
   useEffect(() => {
     if (defaultAccount === null || defaultAccount === undefined) return;
@@ -27,6 +34,7 @@ function MyWallet() {
     console.log("Updating Ethers")
     try {
       const tempProvider = new ethers.providers.Web3Provider(window.ethereum);
+      setProvider(tempProvider);
       const tempSigner = tempProvider.getSigner();
       //  合約資料
       const tempTEDContract = new ethers.Contract(TEDAddress, USDTABI, tempSigner)
@@ -73,15 +81,47 @@ function MyWallet() {
       console.log(err)
     }
   }
+  
+  const setPopup = (title, content) => {
+    setShowPopup(true);
+    setPopupTitle(title);
+    setPopupContent(content);
+  }
 
   const handleWithdraw = async () => {
     console.log("Withdrawing")
-    await MinerContract.claimReward();
+    const result = await MinerContract.claimReward();
+
+    provider
+      .getTransaction(result.hash)
+      .then((tx) => {
+        // 監聽交易上鍊事件
+        tx.wait().then(async (receipt) => {
+          //  授權成功
+          console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
+          setPopup("成功授權", `${amountToMint} USDT 已成功授權`);
+          setIsUSDTNotApproved(false);
+          const tempUSDTAllowance = await USDTContract.allowance(defaultAccount, MinerContractAddress);
+          const realUSDTAllowance = ethers.utils.formatUnits(`${tempUSDTAllowance}`, USDTDecimal);
+          const result = Number.isInteger(realUSDTAllowance)
+            ? realUSDTAllowance
+            : Number(realUSDTAllowance).toFixed(4);
+          // setUSDTAllowance(result)
+        })
+      })
   }
 
   return (
     <main className="w-full xl:px-12 px-6 pb-6 xl:pb-12 sm:pt-[156px] pt-[100px]">
       {/* write your code here */}
+      {showPopup && (
+        <Popup onClose={closePopup}>
+          <h2 className="text-base xl:text-2xl text-bgray-900 dark:text-white font-bold">
+            {popupTitle}
+          </h2>
+          <p>{popupContent}</p>
+        </Popup>
+      )}
       <div className="2xl:flex 2xl:space-x-[48px]">
         <section className="2xl:w-[424px]">
           <AddBalance
@@ -99,6 +139,7 @@ function MyWallet() {
             currency="TED"
             showSvgContent={true}
             showButton={true}
+            showMark={false}
             action={handleWithdraw}
           />
           <AddBalance

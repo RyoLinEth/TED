@@ -30,21 +30,21 @@ function HeaderTwo({ handleSidebar, isConnectingWallet }) {
               className="drawer-btn rotate-180 transform"
               onClick={handleSidebar}
             >
-              <span>
+              <span style={{color:'#FFFFFF'}}>
                 <svg
-                  width="16"
-                  height="40"
-                  viewBox="0 0 16 40"
+                  width="60"
+                  height="50"
+                  viewBox="-16 0 16 40"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M0 10C0 4.47715 4.47715 0 10 0H16V40H10C4.47715 40 0 35.5228 0 30V10Z"
-                    fill="#F7F7F7"
+                    fill="#22C55E"
                   />
                   <path
                     d="M10 15L6 20.0049L10 25.0098"
-                    stroke="#A0AEC0"
+                    stroke="#FFFFFF"
                     strokeWidth="1.2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
