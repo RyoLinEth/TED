@@ -43,10 +43,39 @@ function SummaryV2({ width, height, inviter }) {
   const [MinerAmount, setMinerAmount] = useState(0);
 
   const [realInviter, setRealInviter] = useState(defaultInviter)
+  const [fatherAddress, setFatherAddress] = useState(null);
 
+  const [timeLeft, setTimeLeft] = useState(0);
 
   const [sonDatas, setSonDatas] = useState([]);
+  const defaultChart =
+  {
+    labels: [10, 20, 30],
+    datasets: [
+      {
+        label: "My First Dataset",
+        data: [15, 85],
+        backgroundColor: ["#1A202C", "#61C660"],
+        borderColor: ["#ffffff", "#1A202C"],
+        hoverOffset: 18,
+        borderWidth: 0,
+      },
+    ],
+  };
+  const [chartData, setChartData] = useState(defaultChart);
 
+  const updateChartData = (left, total) => {
+    const newData = {
+      ...chartData,
+      datasets: [
+        {
+          ...chartData.datasets[0],
+          data: [left, total], // 新的数据值
+        },
+      ],
+    };
+    setChartData(newData);
+  };
 
 
   useEffect(() => {
@@ -150,6 +179,18 @@ function SummaryV2({ width, height, inviter }) {
       const realMinerPower = ethers.utils.formatUnits(`${tempMinerAmount}`, 0);
       setMinerAmount(realMinerPower * 2)
 
+      const tempFather = await tempMinerContract.fatherAddress(defaultAccount);
+      const nullAddress = "0x0000000000000000000000000000000000000000"
+      if (tempFather !== nullAddress)
+        setFatherAddress(tempFather);
+
+      const tempTimeLeft = await tempMinerContract.timeLeft(defaultAccount);
+      const realTimeLeft = ethers.utils.formatUnits(`${tempTimeLeft}`, 0);
+      console.log("Time Left : " + realTimeLeft)
+      setTimeLeft(realTimeLeft);
+      const lifeTime = 31536000
+      updateChartData(Number(lifeTime - realTimeLeft), Number(realTimeLeft));
+
       if (+result === 0) setIsUSDTNotApproved(true);
       if (+result2 === 0) setIsUSDNotApproved(true);
     } catch (err) {
@@ -233,6 +274,21 @@ function SummaryV2({ width, height, inviter }) {
       })
   }
 
+  const formatTime = (seconds) => {
+    if (isNaN(seconds) || seconds < 0) {
+      return "Invalid input";
+    }
+  
+    const days = Math.floor(seconds / 86400); // 1 日 = 24 小时 * 60 分钟 * 60 秒
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor(((seconds % 86400) % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+  
+    const formattedTime = `${String(days).padStart(2, "0")}日:${String(hours).padStart(2, "0")}時:${String(minutes).padStart(2, "0")}分:${String(remainingSeconds).padStart(2, "0")}秒`;
+    
+    return formattedTime;
+  };
+
   const handleInputChange = (event) => {
     const value = event.target.value;
 
@@ -266,6 +322,7 @@ function SummaryV2({ width, height, inviter }) {
     console.log(amountToMint, realInviter)
     try {
       const result = await MinerContract.mint(amountToMint, realInviter)
+
       console.log(result)
       provider
         .getTransaction(result.hash)
@@ -279,7 +336,9 @@ function SummaryV2({ width, height, inviter }) {
           })
         })
     } catch (err) {
-      swal("錯誤", err, "error")
+      console.log(err)
+      swal("錯誤", err.reason, "error")
+      closePopup();
     }
   }
 
@@ -297,48 +356,22 @@ function SummaryV2({ width, height, inviter }) {
           <p>{popupContent}</p>
         </Popup>
       )}
-      <div className="flex justify-between items-center pb-2 mb-2 border-b border-bgray-300">
+      <div>
         <h3 className="text-bgray-900 dark:text-white sm:text-2xl text-xl font-bold">
           礦機使用情形
         </h3>
-        <div className="mb-4 flex items-center space-x-8">
-          <div
-            className={`relative ${width ? width : "w-[180px]"} ${height && height
-              }`}
-          >
-            <PieChart />
-          </div>
-        </div>
-      </div>
-      <div className="flex justify-between items-center pb-2 mb-2 border-b border-bgray-300">
-        <h3 className="text-bgray-900 dark:text-white sm:text-2xl text-xl font-bold">
-          團隊礦機
 
-          我的團隊級別
-        </h3>
+        <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
+          礦機壽命 : {formatTime(timeLeft)}
+        </p>
         <div className="mb-4 flex items-center space-x-8">
           <div
             className={`relative ${width ? width : "w-[180px]"} ${height && height
               }`}
           >
+            {chartData != defaultChart &&
+              <PieChart data={chartData} />}
           </div>
-          <ul>
-            {
-              sonDatas !== undefined && sonDatas !== null && sonDatas.length !== 0 &&
-              sonDatas.map((data, index) => {
-                return (
-                  <li key={data.son}>
-                    <p>{index + 1}.</p>
-                    <p>子級別地址:
-                      <a href={data.link}>
-                        {data.son.slice(0, 4)}...{data.son.slice(-4)}
-                      </a>
-                    </p>
-                    <p>子級別算力: {data.power}</p>
-                  </li>
-                )
-              })}
-          </ul>
         </div>
       </div>
       <div className="flex justify-between items-center mb-8">
@@ -350,7 +383,11 @@ function SummaryV2({ width, height, inviter }) {
         10 USDT + 10 USD
       </div>
       <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
-        當前邀請者 : {realInviter}
+        {
+          fatherAddress === null
+            ? `當前邀請者 : ${realInviter}`
+            : `上級地址 : ${fatherAddress}`
+        }
       </p>
       <div className="flex space-x-3 mb-10">
         {
