@@ -35,9 +35,11 @@ function SummaryV2({ width, height, inviter }) {
   const [signer, setSigner] = useState(null);
   const [USDTContract, setUSDTContract] = useState(null);
   const [USDTDecimal, setUSDTDecimal] = useState(null);
+  const [USDTBalance, setUSDTBalance] = useState(0);
 
   const [USDContract, setUSDContract] = useState(null);
   const [USDDecimal, setUSDDecimal] = useState(null);
+  const [USDBalance, setUSDBalance] = useState(0);
 
   const [MinerContract, setMinerContract] = useState(null);
   const [MinerAmount, setMinerAmount] = useState(0);
@@ -154,6 +156,13 @@ function SummaryV2({ width, height, inviter }) {
       const tempUSDTDecimal = await tempUSDTContract.decimals();
       setUSDTDecimal(tempUSDTDecimal);
 
+      const tempUSDTBalance = await tempUSDTContract.balanceOf(defaultAccount);
+      const realUSDTBalance = ethers.utils.formatUnits(`${tempUSDTBalance}`, tempUSDTDecimal);
+      const usdtBalanceResult = Number.isInteger(realUSDTBalance)
+        ? realUSDTBalance
+        : Number(realUSDTBalance).toFixed(4);
+      setUSDTBalance(usdtBalanceResult);
+
       const realUSDTAmount = ethers.utils.formatUnits(`${tempUSDTAllowance}`, tempUSDTDecimal);
       const result = Number.isInteger(realUSDTAmount)
         ? realUSDTAmount
@@ -166,6 +175,13 @@ function SummaryV2({ width, height, inviter }) {
       const tempUSDAllowance = await tempUSDContract.allowance(defaultAccount, MinerContractAddress);
       const tempUSDDecimal = await tempUSDContract.decimals();
       setUSDDecimal(tempUSDDecimal);
+      
+      const tempUSDBalance = await tempUSDContract.balanceOf(defaultAccount);
+      const realUSDBalance = ethers.utils.formatUnits(`${tempUSDBalance}`, tempUSDTDecimal);
+      const usdBalanceResult = Number.isInteger(realUSDBalance)
+        ? realUSDBalance
+        : Number(realUSDBalance).toFixed(4);
+      setUSDBalance(usdBalanceResult);
 
       const realUSDAmount = ethers.utils.formatUnits(`${tempUSDAllowance}`, tempUSDDecimal);
       const result2 = Number.isInteger(realUSDAmount)
@@ -278,14 +294,14 @@ function SummaryV2({ width, height, inviter }) {
     if (isNaN(seconds) || seconds < 0) {
       return "Invalid input";
     }
-  
+
     const days = Math.floor(seconds / 86400); // 1 日 = 24 小时 * 60 分钟 * 60 秒
     const hours = Math.floor((seconds % 86400) / 3600);
     const minutes = Math.floor(((seconds % 86400) % 3600) / 60);
     const remainingSeconds = seconds % 60;
-  
+
     const formattedTime = `${String(days).padStart(2, "0")}日:${String(hours).padStart(2, "0")}時:${String(minutes).padStart(2, "0")}分:${String(remainingSeconds).padStart(2, "0")}秒`;
-    
+
     return formattedTime;
   };
 
@@ -356,7 +372,7 @@ function SummaryV2({ width, height, inviter }) {
           <p>{popupContent}</p>
         </Popup>
       )}
-      <div>
+      <div className="border-b border-bgray-300">
         <h3 className="text-bgray-900 dark:text-white sm:text-2xl text-xl font-bold">
           礦機使用情形
         </h3>
@@ -374,6 +390,7 @@ function SummaryV2({ width, height, inviter }) {
           </div>
         </div>
       </div>
+      <br />
       <div className="flex justify-between items-center mb-8">
         <h3 className="text-base xl:text-xl text-bgray-900 dark:text-white font-bold">
           最低可購算力: 20算力
@@ -382,7 +399,10 @@ function SummaryV2({ width, height, inviter }) {
         <br />
         10 USDT + 10 USD
       </div>
-      <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
+      <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50"
+        style={{
+          wordBreak: 'break-word'
+        }}>
         {
           fatherAddress === null
             ? `當前邀請者 : ${realInviter}`
@@ -418,6 +438,14 @@ function SummaryV2({ width, height, inviter }) {
           </label>
         </div>
       </div>
+
+      <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
+        持有 USDT : {USDTBalance}
+        <br />
+        持有 USD : {USDBalance}
+        <br />
+      </p>
+      <br/>
 
       <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
         所需 USDT : {amountToMint}

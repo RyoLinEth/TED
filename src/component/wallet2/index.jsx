@@ -64,7 +64,8 @@ function Wallet() {
 
 
       const realAmount = ethers.utils.formatUnits(`${tempUSDTBalance}`, tempUSDTDecimal);
-      const result = Number.isInteger(realAmount) ? realAmount : Number(realAmount).toFixed(4);
+      const result = Math.floor(realAmount)
+      // Number.isInteger(realAmount) ? realAmount : Number(realAmount).toFixed(4);
 
       setUSDTAmount(result)
 

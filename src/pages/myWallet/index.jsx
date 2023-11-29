@@ -5,6 +5,7 @@ import MyContext from "../../DataProvider";
 import MinerABI from "../../assets/abi/MinerABI.json"
 import USDTABI from "../../assets/abi/USDTABI.json"
 import Popup from "../../component/Popup/Popup";
+import swal from "sweetalert";
 
 function MyWallet() {
   const { defaultAccount, MinerContractAddress, TEDAddress } = useContext(MyContext);
@@ -89,6 +90,9 @@ function MyWallet() {
   }
 
   const handleWithdraw = async () => {
+    
+    setPopup("領取TED","正在領取TED...")
+    try {
     console.log("Withdrawing")
     const result = await MinerContract.claimReward();
 
@@ -99,7 +103,7 @@ function MyWallet() {
         tx.wait().then(async (receipt) => {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("成功授權", `${amountToMint} USDT 已成功授權`);
+          setPopup("成功提領", `${claimableValue} TED 已成功提領`);
           setIsUSDTNotApproved(false);
           const tempUSDTAllowance = await USDTContract.allowance(defaultAccount, MinerContractAddress);
           const realUSDTAllowance = ethers.utils.formatUnits(`${tempUSDTAllowance}`, USDTDecimal);
@@ -109,7 +113,16 @@ function MyWallet() {
           // setUSDTAllowance(result)
         })
       })
+    } catch (err) {
+      swal("Error", err.reason, "error");
+      setShowPopup(false)
+    }
   }
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
+
 
   return (
     <main className="w-full xl:px-12 px-6 pb-6 xl:pb-12 sm:pt-[156px] pt-[100px]">
@@ -148,7 +161,6 @@ function MyWallet() {
             currency="TED"
             showSvgContent={false}
             showButton={false}
-            action={handleWithdraw}
           />
         </section>
         <section className="2xl:w-[424px]">
