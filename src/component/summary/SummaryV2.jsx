@@ -317,7 +317,7 @@ function SummaryV2({ width, height, inviter }) {
     }
   };
   const mintMiner = async () => {
-    if (+amountToMint < 10) {
+    if (+amountToMint < 1) {
       swal("未達標", "算力未達最低標準", "error")
       return;
     }
