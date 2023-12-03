@@ -115,7 +115,7 @@ function TotalWidgetCard({ title, amount, groth, memberImg, totalEarnImg }) {
       <div className="flex items-end justify-between">
         <div className="flex-1">
           <p className="text-3xl font-bold leading-[48px] text-bgray-900 dark:text-white">
-            ${amount}
+            {title !== "TED 持有量" && "$"}{amount}
           </p>
         </div>
         <div className="w-[106px] h-[68px]">
