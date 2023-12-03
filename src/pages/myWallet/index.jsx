@@ -91,7 +91,7 @@ function MyWallet() {
 
   const handleWithdraw = async () => {
     
-    setPopup("領取TED","正在領取TED...")
+    setPopup("领取TED","正在领取TED...")
     try {
     console.log("Withdrawing")
     const result = await MinerContract.claimReward();
@@ -101,9 +101,9 @@ function MyWallet() {
       .then((tx) => {
         // 監聽交易上鍊事件
         tx.wait().then(async (receipt) => {
-          //  授權成功
-          console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("成功提領", `${claimableValue} TED 已成功提領`);
+          //  授权成功
+          console.log(`交易已上链，区块高度为 ${receipt.blockNumber}`)
+          setPopup("成功提领", `${claimableValue} TED 已成功提领`);
           setIsUSDTNotApproved(false);
           const tempUSDTAllowance = await USDTContract.allowance(defaultAccount, MinerContractAddress);
           const realUSDTAllowance = ethers.utils.formatUnits(`${tempUSDTAllowance}`, USDTDecimal);
@@ -136,9 +136,9 @@ function MyWallet() {
         </Popup>
       )}
       <div className="2xl:flex 2xl:space-x-[48px]">
-        <section className="2xl:w-[424px]">
+      <section className="2xl:w-[424px]">
           <AddBalance
-            title="礦機每小時收益"
+            title="矿机每小时收益"
             content={TEDPerHour}
             currency="USDT"
             showSvgContent={false}
@@ -147,7 +147,7 @@ function MyWallet() {
         </section>
         <section className="2xl:w-[424px]">
           <AddBalance
-            title="可領取收益"
+            title="可领取收益"
             content={claimableValue}
             currency="TED"
             showSvgContent={true}
@@ -156,7 +156,7 @@ function MyWallet() {
             action={handleWithdraw}
           />
           <AddBalance
-            title="待返傭收益"
+            title="待返佣收益"
             content={claimableValue}
             currency="TED"
             showSvgContent={false}
@@ -165,14 +165,14 @@ function MyWallet() {
         </section>
         <section className="2xl:w-[424px]">
           <AddBalance
-            title="已領取 TED 收益"
+            title="已领取 TED 收益"
             content={claimedAmount}
             currency="TED"
             showSvgContent={false}
             showButton={false}
           />
           <AddBalance
-            title="已返傭 TED"
+            title="已返佣 TED"
             content={claimedAmount}
             currency="TED"
             showSvgContent={false}

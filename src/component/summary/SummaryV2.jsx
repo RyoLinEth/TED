@@ -103,11 +103,6 @@ function SummaryV2({ width, height, inviter }) {
     updateEthers()
   }, [defaultAccount])
 
-  useEffect(() => {
-    if (MinerContract === null) return;
-    if (sonDatas.length !== 0) return;
-    fetchSonData(MinerContract, 0);
-  }, [MinerContract])
 
   useEffect(() => {
     if (amountToMint === 0) return;
@@ -175,7 +170,7 @@ function SummaryV2({ width, height, inviter }) {
       const tempUSDAllowance = await tempUSDContract.allowance(defaultAccount, MinerContractAddress);
       const tempUSDDecimal = await tempUSDContract.decimals();
       setUSDDecimal(tempUSDDecimal);
-      
+
       const tempUSDBalance = await tempUSDContract.balanceOf(defaultAccount);
       const realUSDBalance = ethers.utils.formatUnits(`${tempUSDBalance}`, tempUSDTDecimal);
       const usdBalanceResult = Number.isInteger(realUSDBalance)
@@ -214,31 +209,13 @@ function SummaryV2({ width, height, inviter }) {
     }
   }
 
-  const fetchSonData = async (tempCA, num) => {
-    try {
-      console.log("Num : " + num)
-      const tempSonAddressSet = await tempCA.sonDatas(defaultAccount, num);
-      const realSonPower = ethers.utils.formatUnits(`${tempSonAddressSet.sonPower}`, 0);
-      const newData = {
-        son: tempSonAddressSet.son,
-        link: `https://bscscan.com/address/${tempSonAddressSet.son}`,
-        power: realSonPower * 2
-      }
-      setSonDatas(prevSonDatas => [...prevSonDatas, newData]);
-      const updatedNum = num + 1;
-      await fetchSonData(tempCA, updatedNum)
-    } catch (err) {
-      console.log("No More Datas with : " + num)
-    }
-  }
-
   const setPopup = (title, content) => {
     setShowPopup(true);
     setPopupTitle(title);
     setPopupContent(content);
   }
   const approveUSDT = async () => {
-    setPopup("授權USDT", `正在授權 ${amountToMint} USDT`);
+    setPopup("授权USDT", `正在授权 ${amountToMint} USDT`);
     const amountToApprove = ethers.utils.parseUnits(`${amountToMint}`, USDTDecimal);
     console.log("Approving USDT")
     const approveResult = await USDTContract.approve(MinerContractAddress, amountToApprove)
@@ -247,11 +224,11 @@ function SummaryV2({ width, height, inviter }) {
     provider
       .getTransaction(approveResult.hash)
       .then((tx) => {
-        // 監聽交易上鍊事件
+        // 监听交易上链事件
         tx.wait().then(async (receipt) => {
-          //  授權成功
-          console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("成功授權", `${amountToMint} USDT 已成功授權`);
+          //  授权成功
+          console.log(`交易已上链，区块高度为 ${receipt.blockNumber}`)
+          setPopup("成功授权", `${amountToMint} USDT 已成功授权`);
           setIsUSDTNotApproved(false);
           const tempUSDTAllowance = await USDTContract.allowance(defaultAccount, MinerContractAddress);
           const realUSDTAllowance = ethers.utils.formatUnits(`${tempUSDTAllowance}`, USDTDecimal);
@@ -264,7 +241,7 @@ function SummaryV2({ width, height, inviter }) {
   }
 
   const approveUSD = async () => {
-    setPopup("授權USD", `正在授權 ${amountToMint} USD`);
+    setPopup("授权USD", `正在授权 ${amountToMint} USD`);
     const amountToApprove = ethers.utils.parseUnits(`${amountToMint}`, USDDecimal);
     console.log(amountToApprove);
     console.log("Approving USD")
@@ -278,7 +255,7 @@ function SummaryV2({ width, height, inviter }) {
         tx.wait().then(async (receipt) => {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("成功授權", `${amountToMint} USD 已成功授權`);
+          setPopup("成功授权", `${amountToMint} USD 已成功授权`);
           setIsUSDNotApproved(false);
           const tempUSDAllowance = await USDContract.allowance(defaultAccount, MinerContractAddress);
           const realUSDAllowance = ethers.utils.formatUnits(`${tempUSDAllowance}`, USDDecimal);
@@ -318,17 +295,17 @@ function SummaryV2({ width, height, inviter }) {
   };
   const mintMiner = async () => {
     if (+amountToMint < 1) {
-      swal("未達標", "算力未達最低標準", "error")
+      swal("未达标", "算力未达最低标准", "error")
       return;
     }
     if (+USDTAllowance < +amountToMint && +USDAllowance < +amountToMint) {
-      swal("額度不足", "USD 和 USDT 授權額度不足", "error");
+      swal("额度不足", "USD 和 USDT 授权额度不足", "error");
       return;
     } else if (+USDAllowance < +amountToMint) {
-      swal("額度不足", "USD 授權額度不足", "error");
+      swal("额度不足", "USD 授权额度不足", "error");
       return;
     } else if (+USDTAllowance < +amountToMint) {
-      swal("額度不足", "USDT 授權額度不足", "error");
+      swal("额度不足", "USDT 授权额度不足", "error");
       return;
     }
 
@@ -374,11 +351,11 @@ function SummaryV2({ width, height, inviter }) {
       )}
       <div className="border-b border-bgray-300">
         <h3 className="text-bgray-900 dark:text-white sm:text-2xl text-xl font-bold">
-          礦機使用情形
+          矿机使用进度
         </h3>
 
         <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
-          礦機壽命 : {formatTime(timeLeft)}
+          矿机寿命 : {formatTime(timeLeft)}
         </p>
         <div className="mb-4 flex items-center space-x-8">
           <div
@@ -393,36 +370,38 @@ function SummaryV2({ width, height, inviter }) {
       <br />
       <div className="flex justify-between items-center mb-8">
         <h3 className="text-base xl:text-xl text-bgray-900 dark:text-white font-bold">
-          最低可購算力: 20算力
+          最低可购算力: 20算力
         </h3>
-        <br />
-        <br />
+      </div>
+
+      <div className="border-b border-bgray-300" style={{ paddingBottom: '10px' }}>
         10 USDT + 10 USD
       </div>
+      <br />
       <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50"
         style={{
           wordBreak: 'break-word'
         }}>
         {
           fatherAddress === null
-            ? `當前邀請者 : ${realInviter}`
-            : `上級地址 : ${fatherAddress}`
+            ? `当前邀请者 : ${realInviter}`
+            : `上级地址 : ${fatherAddress}`
         }
       </p>
       <div className="flex space-x-3 mb-10">
         {
           (isUSDTNotApproved && amountToMint !== 0) &&
-          < GreenBtn text="授權USDT" className="mt-7" action={approveUSDT} />
+          < GreenBtn text="授权USDT" className="mt-7" action={approveUSDT} />
         }
         {
           (isUSDNotApproved && amountToMint !== 0) &&
-          <GreenBtn text="授權USD" className="mt-7" action={approveUSD} />
+          <GreenBtn text="授权USD" className="mt-7" action={approveUSD} />
         }
       </div>
 
       <div className="flex h-[98px] w-full flex-col justify-between rounded-lg border border-bgray-200 p-4 focus-within:border-success-300 dark:border-darkblack-400">
         <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
-          輸入合成算力數量
+          输入合成算力数量
         </p>
         <div className="flex h-[35px] w-full items-center justify-between">
           <span className="text-2xl font-bold text-bgray-900 dark:text-white">
@@ -445,14 +424,14 @@ function SummaryV2({ width, height, inviter }) {
         持有 USD : {USDBalance}
         <br />
       </p>
-      <br/>
+      <br />
 
       <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
         所需 USDT : {amountToMint}
         <span style={{ paddingLeft: '10px' }}>
           {
             +USDTAllowance >= +amountToMint
-              ? "已授權" : "授權額度不足"
+              ? "已授权" : "授权额度不足"
           }
         </span>
         <br />
@@ -460,7 +439,7 @@ function SummaryV2({ width, height, inviter }) {
         <span style={{ paddingLeft: '10px' }}>
           {
             +USDAllowance >= +amountToMint
-              ? "已授權" : "授權額度不足"
+              ? "已授权" : "授权额度不足"
           }
         </span>
         <br />

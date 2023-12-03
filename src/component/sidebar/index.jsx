@@ -94,7 +94,7 @@ function Sidebar({ handleActive }) {
             </svg>
           </span>
           <span className="item-text text-lg font-medium leading-none">
-            鏈接
+            我的链接
           </span>
         </div>
       </div>
@@ -127,7 +127,7 @@ function Sidebar({ handleActive }) {
             </svg>
           </span>
           <span className="item-text text-lg font-medium leading-none">
-            礦機
+            矿机
           </span>
         </div>
       </div>
@@ -181,7 +181,7 @@ function Sidebar({ handleActive }) {
             </svg>
           </span>
           <span className="item-text text-lg font-medium leading-none">
-            USD Swap
+            USD 兌換
           </span>
         </div>
       </div>
@@ -235,7 +235,7 @@ function Sidebar({ handleActive }) {
             </svg>
           </span>
           <span className="item-text text-lg font-medium leading-none">
-            Swap
+            TED 兌換
           </span>
         </div>
       </div>
@@ -463,7 +463,7 @@ function Sidebar({ handleActive }) {
               TED
             </h1>
             <p className="mb-2 px-7 text-center text-sm leading-5 text-white opacity-[0.5]">
-              只漲不跌
+              只涨不跌
             </p>
             <div className="flex justify-center">
               {/* <a href="/miner"> */}
@@ -476,7 +476,7 @@ function Sidebar({ handleActive }) {
                 <div className="flex h-[36px] w-[134px] justify-center rounded-lg bg-success-300 transition duration-300 ease-in-out hover:bg-success-400">
                   <div className="flex items-center space-x-1.5">
                     <span className="text-sm font-semibold text-white">
-                      開始挖礦
+                      开始挖矿
                     </span>
                     <span>
                       <svg

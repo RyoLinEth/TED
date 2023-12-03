@@ -20,14 +20,14 @@ function PaymentFilter({ amount, setPercentage, tokenName }) {
             <img src={mastar} alt="master" />
           </span>
           <span className="text-sm font-medium text-bgray-900 dark:text-white">
-            {tokenName} 餘額
+            {tokenName} 余额
           </span>
         </div>
         <div className="flex items-center space-x-2">
           <span className="text-sm font-bold text-bgray-900 dark:text-bgray-50">
             {
               amount === null
-                ? "請連接錢包"
+                ? "请连接钱包"
                 : amount
             }
           </span>

@@ -79,7 +79,7 @@ function Wallet() {
   }
 
   const approveUSDT = async () => {
-    setPopup("授權USDT", `正在授權 ${amountToSell} USDT`);
+    setPopup("授权USDT", `正在授权 ${amountToSell} USDT`);
     const amountToApprove = ethers.utils.parseUnits(`${amountToSell}`, USDTDecimal);
     console.log("Approving USDT")
     const approveResult = await USDTContract.approve(USDSwap, amountToApprove)
@@ -92,7 +92,7 @@ function Wallet() {
         tx.wait().then(async (receipt) => {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("成功授權", `${amountToSell} USDT 已成功授權`);
+          setPopup("成功授权", `${amountToSell} USDT 已成功授权`);
           setIsUSDTNotApproved(false);
           const tempUSDTAllowance = await USDTContract.allowance(defaultAccount, USDSwap);
           const realUSDTAllowance = ethers.utils.formatUnits(`${tempUSDTAllowance}`, USDTDecimal);
@@ -106,8 +106,8 @@ function Wallet() {
 
 
   const makeSwap = async () => {
-    if(isUSDTNotApproved) {
-      swal("額度不足","USDT授權額度不足","error");
+    if (isUSDTNotApproved) {
+      swal("额度不足", "USDT授权额度不足", "error");
       return;
     }
     const amountToApproveAndSell = ethers.utils.parseUnits(`${amountToSell}`, USDTDecimal);
@@ -120,7 +120,7 @@ function Wallet() {
         tx.wait().then(async (receipt) => {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("成功兌換", `${amountToSell} USDT 已成功兌換`);
+          setPopup("成功兑换", `${amountToSell} USDT 已成功兑换`);
           updateEthers()
         })
       })
@@ -158,7 +158,7 @@ function Wallet() {
       <div className="my-wallet mb-8 w-full">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-lg font-bold text-bgray-900 dark:text-white">
-            我的錢包
+            我的钱包
             <span style={{ paddingLeft: '20px' }}>
               {
                 connectingAccount
@@ -177,7 +177,7 @@ function Wallet() {
       </div>
       <div className="w-full">
         <h3 className="mb-4 text-lg font-bold text-bgray-900 dark:text-white">
-          USD Swap
+          USD 兑换
         </h3>
         <PaymentFilter
           amount={USDTAmount}
@@ -186,7 +186,7 @@ function Wallet() {
         />
         <div className="flex h-[98px] w-full flex-col justify-between rounded-lg border border-bgray-200 p-4 focus-within:border-success-300 dark:border-darkblack-400">
           <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
-            輸入欲購買的USD數量
+            输入欲买入的USD数量
           </p>
           <div className="flex h-[35px] w-full items-center justify-between">
             <span className="text-2xl font-bold text-bgray-900 dark:text-white">
@@ -207,9 +207,9 @@ function Wallet() {
           {
 
             (isUSDTNotApproved && amountToSell !== null && amountToSell !== 0) &&
-            <GreenBtn text="授權USDT" className="mt-7" action={approveUSDT} />
+            <GreenBtn text="授权USDT" className="mt-7" action={approveUSDT} />
           }
-          <GreenBtn text="買入USD" className="mt-7" action={makeSwap} />
+          <GreenBtn text="买入USD" className="mt-7" action={makeSwap} />
         </div>
         {
           amountToSell !== 0 && amountToSell !== null &&
@@ -218,7 +218,7 @@ function Wallet() {
             <span style={{ paddingLeft: '10px' }}>
               {
                 +USDTAllowance >= +amountToSell
-                  ? "已授權" : "授權額度不足"
+                  ? "已授权" : "授权额度不足"
               }
             </span>
           </p>

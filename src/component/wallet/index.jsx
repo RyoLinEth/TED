@@ -74,9 +74,8 @@ function Wallet() {
   }
 
   const approveTED = async () => {
-    setPopup("授權TED", `正在授權 ${amountToSell} TED`);
+    setPopup("授权TED", `正在授权 ${amountToSell} TED`);
     const amountToApprove = ethers.utils.parseUnits(`${amountToSell}`, TEDDecimal);
-    console.log("Approving USDT")
     const approveResult = await TEDContract.approve(MinerContractAddress, amountToApprove)
     console.log(approveResult)
 
@@ -87,7 +86,7 @@ function Wallet() {
         tx.wait().then(async (receipt) => {
           //  授權成功
           console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("成功授權", `${amountToSell} TED 已成功授權`);
+          setPopup("成功授权", `${amountToSell} TED 已成功授权`);
           setIsTEDNotApproved(false);
           const tempTEDAllowance = await TEDContract.allowance(defaultAccount, MinerContractAddress);
           const realTEDAllowance = ethers.utils.formatUnits(`${tempTEDAllowance}`, TEDDecimal);
@@ -102,27 +101,27 @@ function Wallet() {
 
   const makeSwap = async () => {
     if (isTEDNotApproved) {
-      swal("額度不足", "TED授權額度不足", "error");
+      swal("额度不足", "TED授权额度不足", "error");
       return;
     }
-    setPopup("賣出 TED", `正在賣出 ${amountToSell} TED`);
+    setPopup("出售 TED", `正在出售 ${amountToSell} TED`);
     try {
-    const amountToApproveAndSell = ethers.utils.parseUnits(`${amountToSell}`, TEDDecimal);
-    const swapResult = await minerContract.swapTEDtoUSDT(amountToApproveAndSell)
+      const amountToApproveAndSell = ethers.utils.parseUnits(`${amountToSell}`, TEDDecimal);
+      const swapResult = await minerContract.swapTEDtoUSDT(amountToApproveAndSell)
 
-    provider
-      .getTransaction(swapResult.hash)
-      .then((tx) => {
-        // 監聽交易上鍊事件
-        tx.wait().then(async (receipt) => {
-          //  授權成功
-          console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
-          setPopup("成功兌換", `${amountToSell} USDT 已成功兌換`);
-          updateEthers()
+      provider
+        .getTransaction(swapResult.hash)
+        .then((tx) => {
+          // 監聽交易上鍊事件
+          tx.wait().then(async (receipt) => {
+            //  授權成功
+            console.log(`交易已上鍊，區塊高度為 ${receipt.blockNumber}`)
+            setPopup("成功兑换", `${amountToSell} TED 已成功兑换`);
+            updateEthers()
+          })
         })
-      })
-    } catch(err) {
-      swal("發生錯誤", err.reason, "error");
+    } catch (err) {
+      swal("发生错误", err.reason, "error");
       setShowPopup(false)
     }
   }
@@ -167,7 +166,7 @@ function Wallet() {
       <div className="my-wallet mb-8 w-full">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-lg font-bold text-bgray-900 dark:text-white">
-            我的錢包
+            我的钱包
             <span style={{ paddingLeft: '20px' }}>
               {
                 connectingAccount
@@ -186,7 +185,7 @@ function Wallet() {
       </div>
       <div className="w-full">
         <h3 className="mb-4 text-lg font-bold text-bgray-900 dark:text-white">
-          TED Swap
+          TED 兑换
         </h3>
         <PaymentFilter
           amount={TEDAmount}
@@ -195,7 +194,7 @@ function Wallet() {
         />
         <div className="flex h-[98px] w-full flex-col justify-between rounded-lg border border-bgray-200 p-4 focus-within:border-success-300 dark:border-darkblack-400">
           <p className="text-sm font-medium text-bgray-600 dark:text-bgray-50">
-            輸入欲販售的TED數量
+            输入欲出售的TED数量
           </p>
           <div className="flex h-[35px] w-full items-center justify-between">
             <span className="text-2xl font-bold text-bgray-900 dark:text-white">
@@ -216,10 +215,10 @@ function Wallet() {
         {
 
           (+TEDAllowance < +amountToSell && amountToSell !== null && amountToSell !== 0) &&
-          <GreenBtn text="授權TED" className="mt-7" action={approveTED} />
+          <GreenBtn text="授权TED" className="mt-7" action={approveTED} />
         }
 
-        <GreenBtn text="販售TED" className="mt-7" action={makeSwap} />
+        <GreenBtn text="出售TED" className="mt-7" action={makeSwap} />
       </div>
       {
         amountToSell !== 0 && amountToSell !== null &&
@@ -228,7 +227,7 @@ function Wallet() {
           <span style={{ paddingLeft: '10px' }}>
             {
               +TEDAllowance >= +amountToSell
-                ? "已授權" : "授權額度不足"
+                ? "已授权" : "授权额度不足"
             }
           </span>
         </p>

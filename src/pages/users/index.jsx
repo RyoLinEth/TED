@@ -24,7 +24,7 @@ function Users() {
       <div className="2xl:flex 2xl:space-x-[48px]">
         <section className="2xl:w-[2000px]">
           <AddBalance
-            title="個人邀請鏈接"
+            title="个人邀请链接"
             content={personalLink}
             showMark={true}
             showSvgContent={false}
@@ -32,13 +32,13 @@ function Users() {
           />
         </section>
       </div>
-      <MyTeam/>
+      <MyTeam />
     </main>
   );
 }
 
 //  礦機合約
-function MyTeam({ width, height}) {
+function MyTeam({ width, height }) {
   const {
     defaultAccount,
     USDTContractAddress,
@@ -105,10 +105,10 @@ function MyTeam({ width, height}) {
 
   return (
     <div className="w-full rounded-lg px-5 py-6 bg-white dark:bg-darkblack-600 h-full">
-      
+
       <div className="flex justify-between items-center pb-2 mb-2 border-b border-bgray-300">
         <h3 className="text-bgray-900 dark:text-white sm:text-2xl text-xl font-bold">
-          我的團隊級別
+          我的团队级别
         </h3>
         <div className="mb-4 flex items-center space-x-8">
           <div
@@ -122,7 +122,7 @@ function MyTeam({ width, height}) {
 
       <div className="flex justify-between items-center pb-2 mb-2 border-b border-bgray-300">
         <h3 className="text-bgray-900 dark:text-white sm:text-2xl text-xl font-bold">
-          團隊礦機
+          团队矿机
         </h3>
         <div className="mb-4 flex items-center space-x-8">
           <div
@@ -137,12 +137,12 @@ function MyTeam({ width, height}) {
                 return (
                   <li key={data.son}>
                     <p>{index + 1}.</p>
-                    <p>子級別地址:
+                    <p>子级别地址:
                       <a href={data.link}>
                         {data.son.slice(0, 4)}...{data.son.slice(-4)}
                       </a>
                     </p>
-                    <p>子級別算力: {data.power}</p>
+                    <p>子级别算力: {data.power}</p>
                   </li>
                 )
               })}

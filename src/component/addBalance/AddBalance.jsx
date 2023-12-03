@@ -7,7 +7,7 @@ function AddBalance({ title, content, currency, showSvgContent, showButton, acti
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
-    swal("複製成功", "專屬鏈接複製成功", "success");
+    swal("复制成功", "专属链接复制成功", "success");
   }
 
   const SvgContent = () => {
@@ -55,7 +55,7 @@ function AddBalance({ title, content, currency, showSvgContent, showButton, acti
       {
         showButton &&
         <div className="flex justify-center -mt-6" onClick={action}>
-          <TransparentBtn title="領取TED" />
+          <TransparentBtn title="领取TED" />
         </div>
       }
       {showMark &&
@@ -67,7 +67,7 @@ function AddBalance({ title, content, currency, showSvgContent, showButton, acti
             onClick={handleCopyLink}
             className="flex justify-center -mt-6"
           >
-            <TransparentBtn title="複製鏈接" />
+            <TransparentBtn title="复制链接" />
           </div>
         </CopyToClipboard>
       }
