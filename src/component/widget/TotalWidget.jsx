@@ -35,13 +35,14 @@ function TotalWidget() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/bsc/0x0b7089bae53fb69692acbdc098fdfdc1647ad690'); // Replace with your API endpoint
+      const response = await fetch('https://api.dexscreener.com/latest/dex/pairs/bsc/0x066bdb103b54a9969b0720a4bce11f99c0e1f79c'); // Replace with your API endpoint
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const jsonData = await response.json();
       console.log(jsonData)
-      setTedPrice(jsonData.pair.priceUsd)
+      if (jsonData.pair === null) setTedPrice("0.0001908")
+      else setTedPrice(jsonData.pair.priceUsd)
     } catch (error) {
       console.error('Error fetching data:', error);
     }
