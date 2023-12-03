@@ -7,7 +7,7 @@ export const DataProvider = ({ children }) => {
     //  BSC Contracts
     const USDTContractAddress = "0x55d398326f99059fF775485246999027B3197955"
     const USDContractAddress = "0x9aF7D79c9910A1Ea169deeDFfC757FAB4D5E7dfD"
-    const MinerContractAddress = "0x8893407f85CEe00c5B804099Cbe63Bd401b85286"
+    const MinerContractAddress = "0x7f6F6Ad60061D6D265dD8353b952a25af2A272D2"
 
     const TEDAddress="0x7c9127F628Db9704FcdB097F162a1da2b46626BA"
     const USDSwap="0xDe403151C18C5A945A8eb028035abb7ced0D93A3"
