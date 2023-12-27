@@ -3,6 +3,7 @@ import AddBalance from "../../component/addBalance/AddBalance";
 import MyContext from "../../DataProvider";
 import { ethers } from "ethers";
 import MinerABI from '../../assets/abi/MinerABI.json'
+import Announcement from "../../pages/announcement";
 
 function Users() {
   const defaultLink = "https://dapp.tedusd.online/miner?inviter=";
@@ -21,6 +22,7 @@ function Users() {
 
     <main className="w-full xl:px-12 px-6 pb-6 xl:pb-12 sm:pt-[156px] pt-[100px]">
       {/* write your code here */}
+      <Announcement/>
       <div className="2xl:flex 2xl:space-x-[48px]">
         <section className="2xl:w-[2000px]">
           <AddBalance

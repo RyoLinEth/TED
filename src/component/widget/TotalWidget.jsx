@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import MyContext from "../../DataProvider";
 import USDTABI from '../../assets/abi/USDTABI.json';
 import { ethers } from "ethers";
+import Announcement from "../../pages/announcement";
 
 function TotalWidget() {
   const { defaultAccount, TEDAddress } = useContext(MyContext)
@@ -72,6 +73,7 @@ function TotalWidget() {
   return (
     <div className="mb-[24px] w-full">
       <div className="grid grid-cols-1 gap-[24px] lg:grid-cols-3">
+        <Announcement />
         <TotalWidgetCard
           totalEarnImg={totalEarn}
           memberImg={memberImg}
@@ -92,5 +94,6 @@ function TotalWidget() {
     </div>
   );
 }
+
 
 export default TotalWidget;

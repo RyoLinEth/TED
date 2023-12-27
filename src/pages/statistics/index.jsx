@@ -8,6 +8,7 @@ import TaskSummary from "../../component/summary/TaskSummary";
 import { useLocation } from 'react-router-dom';
 import { useContext, useEffect, useState } from "react";
 import MyContext from "../../DataProvider";
+import Announcement from "../../pages/announcement";
 
 function Statistics() {
   const [linkInviter, setLinkInviter] = useState(null);
@@ -40,6 +41,7 @@ function Statistics() {
 
   return (
     <main className="w-full px-6 pb-6 pt-[100px] sm:pt-[156px] xl:px-12 xl:pb-12">
+      <Announcement/>
       {/* write your code here */}
       <div className="2xl:flex 2xl:space-x-[48px]">
         <section className="2xl:flex-1 2xl:mb-0 mb-6">

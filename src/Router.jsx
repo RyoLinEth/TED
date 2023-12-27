@@ -8,6 +8,7 @@ import Inbox from "./pages/inbox";
 import Users from "./pages/users";
 import Error from "./pages/error";
 import Layout from "./component/layout";
+import Fomo from "./pages/fomo";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: "/users",
         element: <Users />,
+      },
+      {
+        path: "/fomo",
+        element: <Fomo />,
       },
     ],
   },

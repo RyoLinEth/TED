@@ -6,6 +6,7 @@ import MinerABI from "../../assets/abi/MinerABI.json"
 import USDTABI from "../../assets/abi/USDTABI.json"
 import Popup from "../../component/Popup/Popup";
 import swal from "sweetalert";
+import Announcement from "../../pages/announcement";
 
 function MyWallet() {
   const { defaultAccount, MinerContractAddress, TEDAddress } = useContext(MyContext);
@@ -126,6 +127,7 @@ function MyWallet() {
 
   return (
     <main className="w-full xl:px-12 px-6 pb-6 xl:pb-12 sm:pt-[156px] pt-[100px]">
+      <Announcement/>
       {/* write your code here */}
       {showPopup && (
         <Popup onClose={closePopup}>
